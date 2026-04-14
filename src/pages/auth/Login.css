@@ -1,0 +1,432 @@
+@import url("https://fonts.googleapis.com/css2?family=League+Gothic&family=Open+Sans:wght@300;400;600&display=swap");
+
+:root {
+  --font-gothic: "League Gothic", sans-serif;
+  --font-sans: "Open Sans", sans-serif;
+}
+
+/* =========================================
+   ADOBE-STYLE LOGIN PAGE
+   Full screen flood image + floating form card
+   Form on RIGHT, tagline on LEFT
+   ========================================= */
+
+.login-page-adobe {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* form on RIGHT */
+}
+
+/* Full screen flood image */
+.login-bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+  animation:
+    loginFadeIn 0.8s ease forwards,
+    kenBurnsLogin 18s ease-in-out infinite alternate;
+}
+
+@keyframes loginFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes kenBurnsLogin {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+  100% {
+    transform: scale(1.06) translate(1%, -1%);
+  }
+}
+
+/* Cinematic overlay — right darker for form, left lighter for tagline */
+.login-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse at center,
+      transparent 40%,
+      rgba(0, 0, 0, 0.55) 100%
+    ),
+    linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.55) 0%,
+      rgba(0, 0, 0, 0.05) 45%,
+      rgba(0, 0, 0, 0.2) 100%
+    ),
+    linear-gradient(to top, rgba(0, 0, 0, 0.5) 0%, transparent 40%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Logo — top left */
+.login-logo {
+  position: absolute;
+  top: 30px;
+  left: 44px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.login-logo .logo-mark {
+  position: relative;
+  width: 9px;
+  height: 40px;
+}
+
+.login-logo .logo-letter-a {
+  position: absolute;
+  top: 52%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: "Major Mono Display", monospace;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+}
+
+.login-logo .logo-text-rest {
+  font-family: "McLaren", cursive;
+  font-size: 1.5rem;
+  color: #ffffff;
+  white-space: nowrap;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Tagline — LEFT side, vertically centered */
+.login-tagline {
+  position: absolute;
+  left: 6%;
+  bottom: 80px;
+  z-index: 2;
+  text-align: left;
+}
+
+.login-brand-title {
+  font-family: "League Gothic", sans-serif;
+  font-size: 50px;
+  font-weight: 400;
+  color: #ffffff;
+  margin: 0;
+  line-height: 0.95;
+  letter-spacing: 1px;
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.5),
+    0 8px 32px rgba(0, 0, 0, 0.6);
+  max-width: 900px !important;
+}
+
+.login-brand-subtitle {
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 10px;
+  letter-spacing: 0.4px;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.7);
+}
+
+/* Form card — RIGHT side, gap from edges */
+.login-form-card {
+  position: relative;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.97);
+  border-radius: 20px;
+  padding: 48px 44px 40px 44px;
+  width: 100%;
+  max-width: 460px;
+  margin-right: 5%;
+  max-height: 92vh;
+  overflow-y: auto;
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.3),
+    0 2px 0 rgba(255, 255, 255, 0.8) inset;
+  backdrop-filter: blur(2px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  scrollbar-width: none;
+}
+.login-form-card::-webkit-scrollbar {
+  display: none;
+}
+
+/* =========================================
+   FORM ELEMENTS — same style as Signup
+   ========================================= */
+
+.login-form-title {
+  font-family: "League Gothic", sans-serif;
+  font-size: 3rem;
+  color: #111;
+  font-weight: 400 !important;
+  margin-top: 0;
+  margin-bottom: 28px;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+.input-group {
+  margin-bottom: 6px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 6px;
+  font-family: var(--font-sans);
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 14px;
+  background-color: rgba(245, 245, 245, 0.8);
+  border: 1px solid rgba(200, 196, 196, 0.6);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 300;
+  outline: none;
+  line-height: 1.7;
+  font-family: var(--font-sans);
+  color: #000;
+  box-sizing: border-box;
+  margin-bottom: 14px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.input-group input:focus {
+  border-color: #8c5a35;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(140, 90, 53, 0.1);
+}
+
+.forgot-password-btn {
+  background: none;
+  border: none;
+  color: #8c5a35;
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-decoration: underline;
+  font-family: var(--font-sans);
+  padding: 0;
+  margin-bottom: 16px;
+  display: block;
+  text-align: right;
+  width: 100%;
+}
+
+.login-button {
+  width: 100%;
+  padding: 16px;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+  transition: all 0.25s ease;
+}
+
+.login-button:hover {
+  background-color: none !important;
+  color: #000000 !important;
+}
+
+.signup-text {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  font-family: var(--font-sans);
+}
+
+.auth-link {
+  color: #8c5a35 !important;
+  text-decoration: underline !important;
+  font-weight: 500 !important;
+  margin-left: 5px;
+}
+
+/* =========================================
+   VALIDATION ERRORS
+   ========================================= */
+
+.error-border {
+  border: 1px solid #d93025 !important;
+  box-shadow: 0 0 0 1px #d93025 !important;
+}
+
+.error-text {
+  color: #d93025;
+  font-size: 12px;
+  margin-top: -10px;
+  margin-bottom: 12px;
+  text-align: left;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+/* Large desktop */
+@media (min-width: 1400px) {
+  .login-form-card {
+    max-width: 500px;
+    margin-right: 6%;
+  }
+  .login-brand-title {
+    font-size: 4.5rem;
+  }
+}
+
+/* Tablet landscape */
+@media (max-width: 1024px) {
+  .login-form-card {
+    max-width: 400px;
+    margin-right: 4%;
+    padding: 36px 32px 28px 32px;
+  }
+  .login-brand-title {
+    font-size: 3.2rem;
+  }
+  .login-tagline {
+    left: 4%;
+  }
+}
+
+/* Tablet portrait + mobile */
+@media (max-width: 768px) {
+  .login-page-adobe {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    height: 100dvh;
+    overflow-y: auto;
+  }
+
+  .login-bg-img {
+    position: fixed;
+    height: 100dvh;
+    width: 100%;
+  }
+
+  .login-overlay {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.45) 0%,
+      rgba(0, 0, 0, 0.15) 35%,
+      rgba(0, 0, 0, 0.1) 100%
+    );
+  }
+
+  /* Logo top center */
+  .login-logo {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    z-index: 10;
+  }
+
+  /* Tagline bottom left of image */
+  .login-tagline {
+    position: fixed;
+    bottom: 57dvh;
+    top: auto;
+    left: 20px;
+    right: auto;
+    transform: none;
+    text-align: left;
+    width: 80%;
+    z-index: 10;
+  }
+  .login-brand-title {
+    font-size: 2.2rem;
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.9);
+  }
+  .login-brand-subtitle {
+    font-size: 13px;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+  }
+
+  /* Form bottom sheet */
+  .login-form-card {
+    position: relative;
+    z-index: 5;
+    margin: 44vh auto 0 auto;
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 28px 28px 0 0;
+    max-width: 100%;
+    width: 100%;
+    max-height: none;
+    min-height: 56dvh;
+    padding: 28px 24px 40px 24px;
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .form-title {
+    font-size: 2.2rem;
+    margin-bottom: 20px;
+  }
+  .login-button {
+    padding: 14px;
+    font-size: 1rem;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .login-form-card {
+    padding: 24px 20px 36px 20px;
+    margin-top: 42vh;
+  }
+  .form-title {
+    font-size: 2rem;
+  }
+  .login-brand-title {
+    font-size: 1.9rem;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 360px) {
+  .login-form-card {
+    padding: 20px 16px 32px 16px;
+    margin-top: 40vh;
+  }
+  .login-brand-title {
+    font-size: 1.6rem;
+  }
+}

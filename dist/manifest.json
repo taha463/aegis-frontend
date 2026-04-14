@@ -1,0 +1,28 @@
+{
+  "short_name": "Aegis",
+  "name": "Aegis: AI Flood Guard",
+  "icons": [
+    {
+      "src": "copy-removebg-preview.png",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "copy-removebg-preview.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "copy-removebg-preview.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#016335",
+  "background_color": "#ffffff",
+  "orientation": "portrait",
+  "description": "AI-powered flood detection and lifesaving emergency assistance."
+}

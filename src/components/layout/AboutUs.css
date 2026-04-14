@@ -1,0 +1,231 @@
+@import url("https://fonts.googleapis.com/css2?family=League+Gothic&family=Open+Sans:wght@300;400;600&display=swap");
+
+:root {
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-xl: 24px;
+  --spacing-3xl: 48px;
+  --spacing-4xl: 72px;
+}
+/* Initial hidden state */
+.reveal {
+  opacity: 0.5;
+  transform: translateY(40px);
+  transition: all 0.8s ease-out;
+}
+
+/* State when scrolled into view */
+.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.feature-card.reveal:nth-child(1) {
+  transition-delay: 0.1s;
+}
+.feature-card.reveal:nth-child(2) {
+  transition-delay: 0.3s;
+}
+.feature-card.reveal:nth-child(3) {
+  transition-delay: 0.5s;
+}
+.feature-card.reveal:nth-child(4) {
+  transition-delay: 0.7s;
+}
+
+/* The image stack can slide in from the right */
+.pinterest-wrapper.reveal {
+  transform: translateX(50px); /* Slides from right */
+  opacity: 0;
+}
+
+.pinterest-wrapper.reveal-visible {
+  transform: translateX(0);
+  opacity: 1;
+  transition-delay: 0.4s;
+}
+.about-section {
+  padding: var(--spacing-4xl) 0;
+  background-color: #faf8f5;
+}
+
+.about-header {
+  margin-bottom: var(--spacing-3xl);
+}
+
+.about-title {
+  font-family: "League Gothic", sans-serif;
+  font-size: 4.5rem;
+  font-weight: 400;
+  line-height: 1;
+  margin-bottom: 2rem;
+  color: #000;
+  letter-spacing: -1px;
+}
+
+.about-subtitle {
+  font-family: var(--font-sans);
+  color: #64717c;
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.about-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-3xl);
+  align-items: start;
+}
+
+/* ================================
+   FEATURES
+================================ */
+.features-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xl);
+}
+
+.feature-card {
+  padding: var(--spacing-md) 0;
+}
+
+.feature-number {
+  font-family: var(--font-sans);
+  font-size: 58px;
+  font-weight: bold;
+  color: #244d4d;
+  display: block;
+  margin-bottom: var(--spacing-sm);
+}
+
+.feature-title {
+  font-family: var(--font-sans);
+  font-size: 24px;
+  font-weight: bold;
+  color: #244d4d;
+  margin-bottom: var(--spacing-sm);
+}
+
+.feature-description {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  color: #64717c;
+  line-height: 24px;
+  text-align: justify;
+}
+
+/* ================================
+   PINTEREST IMAGE LAYOUT
+================================ */
+.pinterest-wrapper {
+  width: 100%;
+}
+
+.pinterest-grid {
+  display: flex;
+  gap: 20px;
+}
+
+.pin-col {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.offset {
+  margin-top: 30px;
+}
+
+.pin-img {
+  width: 100%;
+  object-fit: cover;
+  background-color: #ddd;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s ease;
+}
+
+.pin-img:hover {
+  transform: scale(1.03);
+}
+
+/* IMAGE HEIGHTS */
+.size-short {
+  height: 190px;
+}
+
+.size-tall {
+  height: 270px;
+}
+
+.size-very-tall {
+  height: 350px;
+}
+
+.size-medium {
+  height: 200px;
+}
+/* ================================
+   RESPONSIVE (Mobile & Tablet)
+================================ */
+@media (max-width: 992px) {
+  /* 1. Switch layout to a vertical stack */
+  .about-content {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  /* 2. THE KEY FIX: Move Images to the TOP using 'order' */
+  .pinterest-wrapper {
+    order: -1; /* -1 moves it to the very start */
+    margin-bottom: 10px;
+  }
+
+  /* 3. Keep images side-by-side (Pinterest style) on mobile */
+  /* (Do not stack them vertically, or the scroll becomes too long) */
+  .pinterest-grid {
+    flex-direction: row;
+    gap: 15px;
+  }
+
+  .pin-col {
+    width: 50%; /* Keep columns equal width */
+    gap: 15px;
+  }
+
+  /* Adjust heights slightly for smaller screens if needed */
+  .size-short {
+    height: 150px;
+  }
+  .size-tall {
+    height: 220px;
+  }
+  .size-very-tall {
+    height: 280px;
+  }
+  .size-medium {
+    height: 160px;
+  }
+
+  /* Maintain the stagger effect */
+  .offset {
+    margin-top: 30px;
+  }
+}
+
+@media (max-width: 576px) {
+  .features-grid {
+    grid-template-columns: 1fr; /* Stack the 4 points vertically on small phones */
+    gap: 30px;
+  }
+
+  .about-title {
+    font-size: 3.5rem;
+  }
+
+  /* On very small phones, reduce the offset slightly */
+  .offset {
+    margin-top: 20px;
+  }
+}

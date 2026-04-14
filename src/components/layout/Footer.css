@@ -1,0 +1,177 @@
+@import url("https://fonts.googleapis.com/css2?family=League+Gothic&family=Open+Sans:wght@300;400;600&display=swap");
+
+.footer {
+  background-color: #244d4d;
+  color: var(--color-white);
+  padding: var(--spacing-3xl) 0 var(--spacing-lg);
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--spacing-3xl);
+  padding-bottom: var(--spacing-2xl);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-brand {
+  max-width: 280px;
+}
+
+.footer-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 95%;
+  margin: 0 auto;
+}
+
+/* --- LOGO CONTAINER --- */
+.logo {
+  display: flex;
+  align-items: center;
+  /* Gap between Image and Coded Logo */
+  gap: 1px;
+  text-decoration: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* 1. THE IMAGE STYLE */
+.logo-img {
+  height: 35px; /* Matches the size of the coded logo */
+  width: auto;
+  object-fit: contain;
+  /* Adds the gold glow */
+  filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.3));
+}
+
+/* 2. THE TRIANGLE CONTAINER (Coded) *
+
+/* The 'A' inside */
+.logo-letter-a {
+  position: absolute;
+  top: 52%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  font-family: "Major Mono Display", monospace;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: -1px;
+}
+
+/* 3. THE TEXT 'egis' */
+.logo-text-rest {
+  font-family: "McLaren", cursive;
+  font-size: 1.5rem;
+  color: white;
+  margin-top: 4px;
+}
+
+.footer-tagline {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: var(--text-sm);
+  margin-bottom: var(--spacing-lg);
+  font-family: var(--font-sans);
+}
+
+.social-links {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.social-link {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  color: var(--color-white);
+  transition: all var(--transition-fast);
+}
+
+.social-link:hover {
+  background-color: var(--color-secondary);
+  color: var(--color-white);
+}
+
+.footer-links {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-2xl);
+  justify-content: end;
+  font-family: var(--font-sans);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.footer-heading {
+  font-family: var(--font-primary);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-white);
+  margin-bottom: var(--spacing-md);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: var(--font-sans);
+}
+
+.footer-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  font-family: var(--font-sans);
+}
+
+.footer-list a {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: var(--text-sm);
+  transition: color var(--transition-fast);
+}
+
+.footer-list a:hover {
+  color: var(--color-secondary);
+}
+
+.footer-bottom {
+  padding-top: var(--spacing-lg);
+  text-align: center;
+}
+
+.copyright {
+  color: #ffffff;
+  font-size: var(--text-xs);
+  margin-bottom: 0;
+  font-size: 16px;
+  font-family: var(--font-sans);
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-2xl);
+  }
+
+  .footer-brand {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .social-links {
+    justify-content: center;
+  }
+
+  .footer-links {
+    grid-template-columns: 1fr 1fr;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-links {
+    grid-template-columns: 1fr;
+  }
+}

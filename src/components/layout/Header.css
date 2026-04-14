@@ -1,0 +1,336 @@
+@import url("https://fonts.googleapis.com/css2?family=League+Gothic&family=Open+Sans:wght@300;400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Major+Mono+Display&family=McLaren&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&display=swap");
+
+:root {
+  --color-bronze: #8b5e3c;
+  --color-bronze-hover: #7a4e2b;
+  --color-white: #950000;
+  --color-sand: #e4d5b7; /* SAND COLOR */
+  --color-glass: rgba(242, 242, 242, 0.127);
+  --font-main: "Open Sans", sans-serif;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 15px 0;
+  font-family: var(--font-main);
+  background: transparent;
+  transition:
+    background-color 0.3s,
+    color 0.3s; /* smooth transition */
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 95%;
+  margin: 0 auto;
+}
+
+/* --- LOGO CONTAINER --- */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  text-decoration: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  z-index: 102; /* Above mobile menu */
+}
+
+.logo-img {
+  height: 35px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.3));
+}
+
+.logo-mark {
+  position: relative;
+  width: 20px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1px;
+}
+
+.logo-letter-a {
+  position: absolute;
+  top: 52%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: "Major Mono Display", monospace;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-white);
+  letter-spacing: -1px;
+  transition: color 0.3s;
+}
+
+.logo-text-rest {
+  font-family: "McLaren", cursive;
+  font-size: 1.5rem;
+  color: var(--color-white);
+  margin-top: 4px;
+  transition: color 0.3s;
+}
+
+/* --- NAV LINKS --- */
+.nav {
+  /* Desktop Default: Flex row */
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.nav-list {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link {
+  color: var(--color-white);
+  font-size: 1.1rem;
+  font-weight: 300;
+  text-decoration: none;
+  transition:
+    color 0.3s,
+    opacity 0.3s;
+  opacity: 0.9;
+}
+
+/* HOVER COLOR: SAND */
+.nav-link:hover {
+  opacity: 1;
+  font-weight: 400;
+  color: var(--color-sand);
+}
+
+/* --- BUTTONS --- */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.btn-signup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-white);
+  font-size: 1rem;
+  font-weight: 400;
+  padding: 5px 5px 5px 20px;
+  border-radius: 50px;
+  background-color: var(--color-glass);
+  backdrop-filter: blur(5px);
+  text-decoration: none;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+.btn-signup:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: var(--color-sand);
+}
+
+.signup-circle-icon {
+  width: 34px;
+  height: 34px;
+  background-color: var(--color-white);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000000;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+.btn-explore {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--color-bronze);
+  color: white;
+  font-size: 1.07rem;
+  font-weight: 400;
+  padding: 12px 20px;
+  border-radius: 50px;
+  text-decoration: none;
+  transition:
+    background-color 0.3s,
+    transform 0.2s;
+  box-shadow: 0 0 18px 3px #8b5e3c;
+}
+
+.btn-explore:hover {
+  background-color: var(--color-bronze-hover);
+  color: var(--color-sand);
+}
+
+.menu-toggle {
+  display: none;
+  color: var(--color-white);
+  transition: color 0.3s;
+}
+
+/* --- SCROLLED STATE (dark text on light background) --- */
+.header.scrolled {
+  background-color: rgba(
+    251,
+    251,
+    251,
+    0.05
+  ) !important; /* Made it solid white */
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+.header.scrolled .logo-letter-a,
+.header.scrolled .logo-text-rest {
+  color: #222 !important;
+}
+
+.header.scrolled .nav-link {
+  color: #222 !important;
+}
+.header.scrolled .nav-link:hover {
+  color: var(--color-bronze) !important;
+}
+
+.header.scrolled .btn-signup {
+  color: #222;
+  background-color: rgba(0, 0, 0, 0.087);
+}
+.header.scrolled .btn-signup:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.header.scrolled .signup-circle-icon {
+  background-color: #222;
+  color: #fff;
+}
+
+/* Explore button: keep its original look, or darken a bit */
+.header.scrolled .btn-explore {
+  background-color: #6b4a2e; /* slightly darker bronze */
+  color: #fff;
+}
+
+.header.scrolled .menu-toggle {
+  color: #222;
+}
+@media (max-width: 1024px) {
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw; /* ← full viewport width */
+    height: 100vh; /* ← full viewport height */
+    background-color: #244d4d;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    transform: translateX(100%);
+    transition: transform 0.4s ease-in-out;
+    z-index: 9999; /* ← above EVERYTHING */
+  }
+
+  .menu-toggle {
+    display: block;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 99999; /* ← above the drawer so X button is always clickable */
+    position: relative;
+  }
+
+  .logo {
+    z-index: 99999; /* ← above drawer */
+    position: relative;
+  }
+
+  .nav-open {
+    transform: translateX(0);
+  }
+
+  .nav-list {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .nav-link {
+    font-size: 1.5rem;
+    color: white !important; /* always white inside drawer */
+    opacity: 1;
+  }
+
+  .header-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 80%;
+    align-items: center;
+  }
+
+  .btn-signup,
+  .btn-explore {
+    justify-content: center;
+    width: 80%;
+    padding: 15px;
+    font-size: 1.1rem;
+  }
+
+  /* Mobile header bar — always solid when scrolled */
+  .header.scrolled {
+    background-color: rgba(220, 219, 219, 0.068) !important;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.032);
+  }
+
+  /* Drawer keeps teal regardless of scroll */
+  .header.scrolled .nav {
+    background-color: #244d4d !important;
+  }
+
+  .header.scrolled .nav .nav-link {
+    color: white !important;
+  }
+
+  .header.scrolled .nav .btn-signup {
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.269) !important;
+  }
+
+  .header.scrolled .nav .signup-circle-icon {
+    background-color: rgba(255, 255, 255, 0.529) !important;
+    color: black !important;
+  }
+
+  /* Header bar logo + toggle go dark on scroll */
+  .header.scrolled .logo-letter-a,
+  .header.scrolled .logo-text-rest {
+    color: #000000 !important;
+  }
+
+  .header.scrolled .menu-toggle {
+    color: #222 !important;
+  }
+}

@@ -1,0 +1,413 @@
+/* =========================================
+   1. FONT IMPORTS (MUST BE AT THE VERY TOP)
+   ========================================= */
+@import url("https://fonts.googleapis.com/css2?family=League+Gothic&family=Major+Mono+Display&family=McLaren&family=Open+Sans:wght@300;400;600;700&display=swap");
+
+/* --- VARIABLES --- */
+:root {
+  --legal-bg: #fbfbfb;
+  --legal-black: #000000;
+  --legal-text: #333333;
+  --color-sand: #9e7b36; /* For Navbar Hover */
+  --color-teal-hover: #244d4d; /* NEW: For Sidebar Hover */
+
+  /* Font Variables */
+  --font-heading: "League Gothic", sans-serif;
+  --font-body: "Open Sans", sans-serif;
+  --font-logo-A: "Major Mono Display", monospace;
+  --font-logo-text: "McLaren", cursive;
+}
+
+/* =========================================
+   2. GLOBAL FONT RESET FOR THIS PAGE
+   ========================================= */
+.legal-page {
+  background-color: var(--legal-bg);
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  font-family: var(--font-body) !important;
+  color: var(--legal-text);
+}
+
+.legal-page * {
+  box-sizing: border-box;
+}
+
+/* =========================================
+   3. HEADER STYLES (Keep Sand Hover Here)
+   ========================================= */
+.legal-page .header {
+  width: 100%;
+  padding: 15px 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  position: relative;
+  z-index: 1000;
+}
+
+.legal-page .header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* --- LOGO FIX: TARGET ONLY HEADER LOGO --- */
+/* This prevents the Footer logo from turning black */
+.legal-page .header .logo {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  text-decoration: none;
+  cursor: pointer;
+  z-index: 1200;
+}
+
+.legal-page .header .logo-img {
+  height: 35px;
+}
+
+.legal-page .header .logo-letter-a {
+  font-family: var(--font-logo-A) !important;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--legal-black);
+  transition: color 0.3s ease;
+}
+
+.legal-page .header .logo-text-rest {
+  font-family: var(--font-logo-text) !important;
+  font-size: 1.5rem;
+  color: var(--legal-black);
+  margin-top: 4px;
+  transition: color 0.3s ease;
+}
+
+/* Nav */
+.legal-page .nav {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  margin-left: auto;
+}
+
+.legal-page .nav-list {
+  display: flex;
+  gap: 40px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.legal-page .nav-link {
+  font-family: var(--font-body) !important;
+  color: var(--legal-black);
+  font-size: 1rem;
+  font-weight: 400;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+/* NAVBAR HOVER REMAINS SAND */
+.legal-page .nav-link:hover {
+  color: var(--color-sand) !important;
+}
+
+.legal-page .header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.legal-page .menu-toggle {
+  display: none;
+}
+
+/* Buttons */
+.legal-page .btn-signup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #e1e1e1;
+  color: #333;
+  padding: 8px 20px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-family: var(--font-body) !important;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.legal-page .btn-signup:hover {
+  background-color: rgba(209, 209, 209, 0.523);
+  color: var(--color-sand);
+}
+.legal-page .btn-explore {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  font-family: var(--font-body) !important;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  box-shadow: 0 0 18px 3px #8b5e3c91;
+}
+.legal-page .btn-explore:hover {
+  background-color: var(--color-bronze-hover);
+  color: #cab770;
+}
+.legal-page .signup-circle-icon {
+  width: 28px;
+  height: 28px;
+  background-color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+}
+
+/* =========================================
+   4. MOBILE HEADER & DRAWER LOGIC
+   ========================================= */
+@media (max-width: 1024px) {
+  .legal-page .menu-toggle {
+    display: block;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #000000; /* Black by default so it is visible on white bg */
+    z-index: 1200;
+    transition: color 0.3s ease;
+  }
+
+  .legal-page .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: #244d4d;
+    flex-direction: column;
+    justify-content: center;
+    gap: 30px;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 1100;
+    padding: 20px;
+  }
+
+  .legal-page .nav.nav-open {
+    transform: translateX(0);
+  }
+
+  /* --- CRITICAL FIX: TURN LOGO & HAMBURGER WHITE WHEN MENU OPEN --- */
+  .legal-page .header:has(.nav-open) .logo-letter-a,
+  .legal-page .header:has(.nav-open) .logo-text-rest {
+    color: #ffffff !important;
+  }
+
+  .legal-page .header:has(.nav-open) .menu-toggle {
+    color: #ffffff !important;
+  }
+
+  .legal-page .nav-list {
+    flex-direction: column;
+    text-align: center;
+    gap: 30px;
+  }
+
+  .legal-page .nav-link {
+    color: #fff;
+    font-size: 1.5rem;
+  }
+
+  .legal-page .nav-link:hover {
+    color: var(--color-sand) !important;
+  }
+
+  .legal-page .header-actions {
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .legal-page .btn-signup {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    width: 70%;
+    justify-content: center;
+    padding: 12px;
+    font-size: 1.1rem;
+  }
+
+  .legal-page .btn-explore {
+    color: #fff;
+    width: 70%;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50px;
+    padding: 12px;
+    font-size: 1.1rem;
+    font-weight: 300;
+  }
+}
+
+/* =========================================
+   5. PAGE CONTENT & SIDEBAR
+   ========================================= */
+.legal-container {
+  max-width: 1300px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 60px 5%;
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 60px;
+}
+
+/* Sidebar */
+.legal-sidebar {
+  position: sticky;
+  top: 50px;
+  height: fit-content;
+  border-right: 1px solid #eee;
+  padding-right: 20px;
+}
+
+.legal-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.legal-sidebar li {
+  margin-bottom: 15px;
+}
+
+.legal-sidebar a {
+  text-decoration: none;
+  color: #555;
+  font-family: var(--font-body) !important;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  display: block;
+}
+
+/* --- DESKTOP SIDEBAR HOVER: DARK TEAL TEXT --- */
+.legal-sidebar a:hover {
+  color: var(--color-teal-hover) !important;
+  font-weight: 600;
+}
+
+/* Content Area */
+.legal-content {
+  width: 100%;
+  min-width: 0;
+}
+
+.page-title {
+  font-family: var(--font-heading) !important;
+  font-size: 4rem;
+  margin: 0 0 10px 0;
+  line-height: 1;
+  font-weight: 400;
+  color: #000;
+  border-bottom: 2px solid #000;
+  padding-bottom: 20px;
+}
+
+.legal-section h2 {
+  font-family: var(--font-heading) !important;
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  margin-top: 0;
+  font-weight: 400;
+  color: #000;
+}
+
+.welcome-title,
+.section-title {
+  font-family: var(--font-heading) !important;
+}
+
+.last-updated,
+.legal-section p,
+.legal-section li {
+  font-family: var(--font-body) !important;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--legal-text);
+  margin-bottom: 15px;
+}
+
+.legal-section ul {
+  padding-left: 20px;
+}
+
+.contact-details {
+  font-weight: 600;
+  color: #000;
+}
+
+/* =========================================
+   6. MOBILE CONTENT LAYOUT (Button Sidebar Style)
+   ========================================= */
+@media (max-width: 900px) {
+  .legal-container {
+    display: flex;
+    flex-direction: column;
+    padding: 30px 20px;
+    gap: 30px;
+  }
+
+  .legal-sidebar {
+    position: relative;
+    top: 0;
+    border-right: none;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 15px;
+    padding-right: 0;
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .legal-sidebar ul {
+    display: flex;
+    gap: 15px;
+    white-space: nowrap;
+  }
+
+  /* --- MOBILE SIDEBAR LINKS (BUTTON STYLE) --- */
+  .legal-sidebar a {
+    background: #f0f0f0;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    transition:
+      background-color 0.3s,
+      color 0.3s;
+  }
+
+  /* --- MOBILE SIDEBAR HOVER: DARK TEAL BG + WHITE TEXT --- */
+  .legal-sidebar a:hover {
+    background-color: var(--color-teal-hover) !important; /* #244D4D */
+    color: #ffffff !important; /* White Text */
+  }
+
+  /* Font Adjustments for Mobile */
+  .page-title {
+    font-size: 3rem;
+  }
+
+  .legal-section h2 {
+    font-size: 2rem;
+  }
+}

@@ -1,0 +1,241 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap");
+
+/* ============================================================
+   AEGIS MAP PAGE — Scoped to .aegis-map-page
+   ============================================================ */
+
+/* ── PAGE SHELL ── */
+.aegis-map-page {
+  display: flex;
+  min-height: 100vh;
+  background-color: #ffffff;
+  font-family: "Open Sans", sans-serif;
+}
+
+/* ── MAIN COLUMN ── */
+.aegis-map-page .map-main-content {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+}
+
+/* ── SIDEBAR OFFSET ── */
+@media (min-width: 840px) {
+  .aegis-map-page .map-main-content {
+    margin-left: 292px;
+  }
+}
+
+/* ── CONTENT BODY = #fbfbfb CARD with inner padding ── */
+.aegis-map-page .content-body {
+  width: 100%;
+  background-color: #fbfbfb;
+  border: 1px solid #efefef;
+  border-radius: 20px;
+  padding: 24px; /* ← this gives the gap from boundary */
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── WELCOME HEADER ROW ── */
+.aegis-map-page .welcome-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.aegis-map-page .page-title {
+  font-size: 2.5rem;
+  font-weight: 400;
+  color: #111827;
+  margin: 0 0 4px;
+  line-height: 1.3;
+}
+
+.aegis-map-page .sub-text {
+  font-size: 0.875rem;
+  color: #7b7b7b;
+  margin: 0;
+}
+
+.aegis-map-page .sub-text b {
+  color: #111827;
+  font-weight: 600;
+}
+
+.aegis-map-page .date-pill {
+  border: 1px solid #e2e8f0;
+  padding: 8px 20px;
+  border-radius: 20px;
+  color: #475569;
+  font-size: 14px;
+  background: #ffffff;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ── MAP SECTION INNER — transparent ── */
+.aegis-map-page .map-section-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+  margin-top: 16px; /* ← space between subtitle/pill and map */
+}
+
+/* ── MAP WRAPPER ── */
+.aegis-map-page .map-wrapper {
+  position: relative;
+  width: 100%;
+  height: 62vh;
+  min-height: 440px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  display: block;
+  visibility: visible;
+}
+
+/* ── CHAT WIDGET — hidden on map page ── */
+.aegis-map-page .chat-widget {
+  display: none !important;
+}
+
+/* ── BLUE DOT PULSE ── */
+@keyframes bluePulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  70% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+/* ── TOGGLE SWITCHES ── */
+.aegis-map-page .aegis-switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.aegis-map-page .aegis-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.aegis-map-page .aegis-switch .slider {
+  position: absolute;
+  inset: 0;
+  background-color: #cbd5e1;
+  transition: background-color 0.25s ease;
+  cursor: pointer;
+}
+
+.aegis-map-page .aegis-switch .slider.round {
+  border-radius: 999px;
+}
+
+.aegis-map-page .aegis-switch .slider::before {
+  content: "";
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  transition: transform 0.25s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+}
+
+.aegis-map-page .aegis-switch input:checked + .slider {
+  background-color: #2d5a54;
+}
+
+.aegis-map-page .aegis-switch input:checked + .slider::before {
+  transform: translateX(18px);
+}
+
+/* ── LOADER ── */
+.aegis-map-page .loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+.aegis-map-page .spinner {
+  width: 44px;
+  height: 44px;
+  border: 4px solid #e2e8f0;
+  border-top-color: #2d5a54;
+  border-radius: 50%;
+  animation: aegisMapSpin 0.75s linear infinite;
+}
+
+@keyframes aegisMapSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .aegis-map-page .map-main-content {
+    padding: 20px;
+  }
+  .aegis-map-page .content-body {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .aegis-map-page .map-main-content {
+    padding: 16px;
+    margin-left: 0;
+  }
+  .aegis-map-page .content-body {
+    padding: 14px;
+    border-radius: 16px;
+  }
+  .aegis-map-page .welcome-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .aegis-map-page .map-wrapper {
+    height: 50vh;
+    min-height: 280px;
+  }
+}
+
+@media (max-width: 480px) {
+  .aegis-map-page .map-main-content {
+    padding: 10px;
+  }
+  .aegis-map-page .content-body {
+    padding: 12px;
+    border-radius: 12px;
+  }
+  .aegis-map-page .map-wrapper {
+    height: 44vh;
+    min-height: 240px;
+  }
+}

@@ -1,0 +1,403 @@
+@import url("https://fonts.googleapis.com/css2?family=League+Gothic&family=Open+Sans:wght@300;400;600&display=swap");
+
+:root {
+  --bg-light: #fbfbfb; /* This is the Light Gray you want */
+  --white: #ffffff;
+  --border-color: #f0f0f0;
+  --text-grey: #7b7b7b;
+  --amber-gold: #8d5e3c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* 1. MAIN PAGE CONTAINER - Set this to Gray (#fbfbfb) */
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: white;
+  font-family: "Open Sans", sans-serif;
+  position: relative;
+}
+
+/* =========================================
+   SIDEBAR
+   ========================================= */
+.sidebar {
+  width: 260px; /* Reduced from 280px to reduce the empty gap feeling */
+  height: 100vh;
+  background: var(--bg-light);
+  border-right: 1px solid var(--border-color);
+
+  /* FIXED: Added Padding Left/Right to center the menu block visually */
+  padding: 20px 10px;
+
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: transform 0.3s ease-in-out;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  width: 100%;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  text-decoration: none;
+}
+
+.logo-img {
+  height: 35px;
+}
+
+.sidebar .logo-text-rest {
+  color: #000000 !important;
+  font-family: "McLaren", cursive;
+  font-size: 1.5rem;
+  margin-top: 2px;
+}
+.sidebar .logo-mark .logo-letter-a {
+  color: #000000 !important;
+  font-family: "Major Mono Display", monospace;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+/* Nav Links */
+.nav-label1,
+.nav-label2 {
+  font-size: 12px;
+  color: var(--text-grey);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 20px 0 10px 0;
+  font-weight: 700;
+}
+.nav-label2 {
+  margin-top: auto;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+
+  /* 1. SEPARATE ICON FROM COLOR EDGE (The Fix) */
+  /* This adds 25px of empty space on the left before the icon starts */
+  padding-left: 25px;
+
+  /* Adds space on the right side */
+  padding-right: 25px;
+
+  /* Adds space on top and bottom so it's not too thin */
+  padding-top: 12px;
+  padding-bottom: 12px;
+
+  /* 2. SPACE BETWEEN ICON AND TEXT */
+  gap: 12px;
+
+  /* Rest of styles */
+  color: #00000092;
+  cursor: pointer;
+  text-decoration: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 300;
+  transition: all 0.2s ease;
+  margin-bottom: 8px; /* Space between buttons */
+}
+
+/* Ensure the hover state looks clean */
+.nav-item:hover {
+  background-color: #f0f0f0; /* Light gray background */
+  color: #00735a;
+}
+
+/* Ensure the active state matches */
+.nav-item.active {
+  color: #000;
+  font-weight: 400;
+}
+.auth-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* =========================================
+   MAIN CONTENT AREA
+   ========================================= */
+.main-content {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+  width: 100%;
+  background-color: white;
+  overflow: visible;
+  position: relative;
+  z-index: 1100;
+}
+
+/* Header Box */
+.floating-header-box {
+  background: var(--bg-light); /* Gray */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 25px;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  border: 1px solid var(--border-color);
+  margin-bottom: 30px;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid #d9d9d9;
+  padding: 8px 15px;
+  border-radius: 50px;
+  width: 300px;
+  height: 45px;
+}
+.search-container input {
+  border: none;
+  outline: none;
+  font-size: 14px;
+  width: 100%;
+}
+.search-dropdown-list {
+  position: absolute;
+  top: 110%; /* Places it right below the search bar */
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  list-style: none;
+  padding: 8px 0;
+  margin: 0;
+  z-index: 1000;
+  max-height: 250px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  position: absolute;
+  z-index: 9999 !important; /* Forces it in front of the map */
+  background: white;
+}
+
+.search-dropdown-list li {
+  padding: 10px 20px;
+  font-size: 14px;
+  color: #444;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.search-dropdown-list li:hover {
+  background-color: #f4e9e2; /* Matches your dashboard theme */
+  color: #8d5e3c;
+}
+
+.no-result {
+  color: #999 !important;
+  font-style: italic;
+  cursor: default !important;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.location-badge {
+  display: flex;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid #d9d9d9;
+  padding: 8px 15px;
+  border-radius: 25px;
+  width: 120px;
+  margin-left: 220px;
+  max-width: 300px;
+  height: 40px;
+}
+.user-profile-pill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  padding: 6px 15px;
+  border-radius: 50px;
+  border: 1px solid var(--border-color);
+}
+.user-avatar-circle {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #6c96a2;
+  flex-shrink: 0;
+}
+.user-avatar-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.user-text-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.2;
+}
+.user-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+.user-email {
+  font-size: 11px;
+  color: #7b7b7b;
+}
+.bell-circle {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid var(--border-color);
+}
+
+/* =========================================
+   2. THE MAIN DASHBOARD CONTAINER (Main-Card)
+   ========================================= */
+.Main-Card {
+  background-color: #fbfbfb !important; /* FIXED: Forced Gray */
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 40px;
+  width: 100%;
+}
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+.dashboard-title-h1 {
+  font-family: "League Gothic", sans-serif;
+  font-size: 54px;
+  font-weight: 400;
+  margin: 0;
+}
+.sub-text {
+  color: #6b7280;
+  margin: 5px 0 0 0;
+  font-family: "Open Sans", sans-serif;
+}
+.date-pill {
+  border: 1px solid #047857;
+  background: white;
+  padding: 8px 20px;
+  font-weight: 600;
+  color: #111827;
+  white-space: nowrap;
+  padding: 8px 20px;
+  border-radius: 20px;
+  color: #2d5a27;
+  font-size: 14px;
+  margin-top: -70px;
+}
+
+/* Chat */
+.chat-widget {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 9999;
+  transition: transform 0.2s ease;
+}
+.chat-widget:hover {
+  transform: scale(1.1);
+}
+.chat-icon {
+  width: 35px;
+  height: 35px;
+}
+h3 {
+  font-family: var(--font-sans);
+}
+/* Responsive */
+.menu-toggle-btn,
+.sidebar-close-btn,
+.sidebar-overlay {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    height: 100vh;
+    transform: translateX(-100%);
+    width: 280px;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  .menu-toggle-btn {
+    display: block;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+  .sidebar-close-btn {
+    display: block;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #333;
+  }
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 900;
+  }
+  .sidebar-overlay.active {
+    display: block;
+  }
+}
