@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { X, Send, Mic, Loader2 } from "lucide-react";
 import "./AegisAssist.css";
 import { auth } from "../../firebaseconfig";
+import { onAuthStateChanged } from "firebase/auth"; // Added to track auth state changes
 
 // Assets
 import shieldLogo from "../../assets/images/Screenshot_2025-12-16_183438-removebg-preview.png";
@@ -52,6 +53,29 @@ const AegisAssist = ({ onClose }) => {
   const textareaRef = useRef(null);
   const recognitionRef = useRef(null);
 
+  // 👤 DYNAMIC USER PROFILE LOGIC
+  const [userName, setUserName] = useState(() => {
+    const saved = localStorage.getItem("aegis_user_profile");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      return parsed.fullName || parsed.name || "Citizen";
+    }
+    return "Citizen";
+  });
+
+  // Track Firebase authenticated user display name fallback
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // If Firebase profile has a displayName, prioritize it if local storage is missing
+        if (user.displayName && userName === "Citizen") {
+          setUserName(user.displayName);
+        }
+      }
+    });
+    return () => unsubscribe();
+  }, [userName]);
+
   const chatStarted = messages.length > 0;
 
   // Auto-scroll
@@ -81,9 +105,7 @@ const AegisAssist = ({ onClose }) => {
     let fullResponse = "";
 
     try {
-      // Get user location (fallback to Gujranwala)
-      // ✅ FIX: Read the exact location the Dashboard already figured out
-      let lat = 31.5204; // Default fallback
+      let lat = 31.5204;
       let lon = 74.3587;
       let city = "Local Area";
 
@@ -92,9 +114,8 @@ const AegisAssist = ({ onClose }) => {
         const parsedLoc = JSON.parse(savedLoc);
         lat = parsedLoc.lat;
         lon = parsedLoc.lon;
-        city = parsedLoc.city; // This will correctly grab "Taxila"!
+        city = parsedLoc.city;
       } else {
-        // Ultimate fallback if no location was ever saved
         const savedProfile = localStorage.getItem("aegis_user_profile");
         if (savedProfile) {
           const parsedProfile = JSON.parse(savedProfile);
@@ -102,7 +123,6 @@ const AegisAssist = ({ onClose }) => {
         }
       }
 
-      // Get token the same way your interceptor does
       const user = auth.currentUser;
       const token = user ? await user.getIdToken() : "";
 
@@ -118,7 +138,6 @@ const AegisAssist = ({ onClose }) => {
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
 
-      // Switch thinking bubble to streaming bubble
       setMessages((prev) => {
         const updated = [...prev];
         updated[updated.length - 1] = { role: "ai", text: "", thinking: false };
@@ -129,10 +148,9 @@ const AegisAssist = ({ onClose }) => {
         const { done, value } = await reader.read();
         if (done) break;
         const raw = decoder.decode(value, { stream: true });
-        // Parse SSE properly — each line is "data: <token>"
         for (const line of raw.split("\n")) {
           if (!line.startsWith("data: ")) continue;
-          const token = line.slice(6); // strip "data: " prefix exactly
+          const token = line.slice(6);
           if (!token) continue;
           fullResponse += token;
         }
@@ -220,7 +238,10 @@ const AegisAssist = ({ onClose }) => {
                       className="hero-icon-img"
                     />
                     <div className="hero-text-col">
-                      <h1 className="greeting-text">{getGreeting()}, Taha!</h1>
+                      {/* FIXED HERE: Taha changed to dynamic user name */}
+                      <h1 className="greeting-text">
+                        {getGreeting()}, {userName}!
+                      </h1>
                       <h1 className="greeting-text">
                         HOW CAN I{" "}
                         <span className="highlight-green">

@@ -1994,25 +1994,30 @@ const DashboardCitizen = ({ weather, forecast, alert, shelters }) => {
                     apiData.evacuation_plan.nearest_shelters.map((s, idx) => {
                       // ✅ UPDATED ICON: Green Flower Tick from external source
 
+                      // 🟢 Normalize the string casing to prevent fallback drops
+                      const statusUpper = (s.status || "").trim().toUpperCase();
+
                       const iconColor =
-                        s.status === "OPEN"
+                        statusUpper === "OPEN"
                           ? "#059669"
-                          : s.status === "LIMITED"
+                          : statusUpper === "LIMITED"
                             ? "#d97706"
-                            : "#dc2626";
+                            : "#00a43f";
 
                       return (
                         <div key={idx} className="shelter-item">
                           <div className="shelter-icon">
-                            {s.status === "OPEN" ? (
-                              <img
-                                src="https://img.icons8.com/color/48/verified-badge.png"
-                                alt="Verified"
-                                style={{ width: "20px", height: "20px" }}
-                              />
-                            ) : (
-                              <CheckCircle size={20} fill={iconColor} />
-                            )}
+                            <div className="shelter-icon">
+                              {statusUpper === "OPEN" ? (
+                                <img
+                                  src="https://img.icons8.com/color/48/verified-badge.png"
+                                  alt="Verified"
+                                  style={{ width: "20px", height: "20px" }}
+                                />
+                              ) : (
+                                <CheckCircle size={20} fill={iconColor} />
+                              )}
+                            </div>
                           </div>
 
                           <div style={{ flex: 1 }}>
