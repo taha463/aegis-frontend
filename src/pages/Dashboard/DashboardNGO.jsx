@@ -29,7 +29,7 @@ import {
   doc,
   deleteDoc,
 } from "firebase/firestore";
-import API_BASE_URL from "../../Config.js";
+import API_BASE_URL from "../../config.js";
 
 const customSelectStyles = {
   control: (provided, state) => ({
