@@ -29,6 +29,7 @@ import {
   doc,
   deleteDoc,
 } from "firebase/firestore";
+import API_BASE_URL from "../../Config.js";
 
 const customSelectStyles = {
   control: (provided, state) => ({
@@ -105,7 +106,7 @@ const DashboardNGO = () => {
 
   // Fetch cities for form dropdown
   useEffect(() => {
-    fetch("http://localhost:8000/cities")
+    fetch(`${API_BASE_URL}/cities`)
       .then((res) => res.json())
       .then((data) => setCities(data))
       .catch((err) => console.error("API error:", err));
@@ -194,7 +195,7 @@ const DashboardNGO = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/submit-progress", {
+      const response = await fetch(`${API_BASE_URL}/submit-progress`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -255,7 +256,7 @@ const DashboardNGO = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:8000/update-shelter", {
+      const response = await fetch(`${API_BASE_URL}/update-shelter`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

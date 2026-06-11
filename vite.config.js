@@ -74,7 +74,9 @@ export default defineConfig({
           {
             // Cache your actual API data (the "Notifications" and "Shelters")
             // This allows the app to show the LAST KNOWN data when offline
-            urlPattern: /^http:\/\/localhost:8000\/.*/i,
+            // This regex matches your local host OR your specific Render production domain
+            urlPattern:
+              /^https?:\/\/(localhost:8000|aegis-app-950c8\.onrender\.com)\/.*/i,
             handler: "NetworkFirst", // Try network, fallback to cache
             options: {
               cacheName: "api-data-cache",
