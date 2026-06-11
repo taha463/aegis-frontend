@@ -32,7 +32,6 @@ import { onAuthStateChanged } from "firebase/auth";
 import API_URL from "../../config";
 // CSS
 import "./Aegismap.css";
-import API_URL from "../../config";
 
 // --- PROFESSIONAL CSS-RENDERED ICONS ---
 const blueDotIcon = new L.DivIcon({

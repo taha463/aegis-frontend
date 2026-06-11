@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { X, Send, Mic, Loader2 } from "lucide-react";
 import "./AegisAssist.css";
 import { auth } from "../../firebaseconfig";
-import API_URL from "../../config";
+
 import { onAuthStateChanged } from "firebase/auth"; // Added to track auth state changes
 
 // Assets
