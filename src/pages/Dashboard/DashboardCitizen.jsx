@@ -7,6 +7,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { useNavigate } from "react-router-dom";
 import { collection, query, onSnapshot, orderBy } from "firebase/firestore";
+import API_BASE_URL from "../../config.js";
 
 const MapController = ({ position }) => {
   // FIX: useMap comes from react-leaflet, not L
@@ -95,7 +96,7 @@ const DashboardCitizen = () => {
       if (firebaseUser) {
         try {
           const token = await firebaseUser.getIdToken();
-          const response = await fetch("http://localhost:8000/user/profile", {
+          const response = await fetch(`${API_BASE_URL}/user/profile`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           const data = await response.json();
@@ -150,7 +151,7 @@ const DashboardCitizen = () => {
 
   // 1. Fetch cities
   useEffect(() => {
-    fetch("http://localhost:8000/cities")
+    fetch(`${API_BASE_URL}/cities`)
       .then((res) => res.json())
       .then((data) => setCities(data))
       .catch((err) => console.error("API error:", err));
