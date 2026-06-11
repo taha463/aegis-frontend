@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getMessaging, onMessage } from "firebase/messaging";
-import API_URL from "../../config";
+import API_URL from "../config";
 import {
   collection,
   query,
@@ -294,7 +294,7 @@ const Header = ({ user, onMenuClick }) => {
       await Promise.all(
         unreadNotifications.map((notif) =>
           !String(notif.id).startsWith("sys_")
-            ? fetch(`http://localhost:8000/notifications/${notif.id}/read`, {
+            ? fetch(`${API_URL}/notifications/${notif.id}/read`, {
                 method: "PUT",
               })
             : Promise.resolve(),
