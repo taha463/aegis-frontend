@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { db as offlineDB } from "../db"; // We use offlineDB to avoid conflict with Firestore 'db'
 import { Send } from "lucide-react"; // Optional: for a nice SMS icon
-import API_URL from "../../config";
 import { getMessaging, getToken } from "firebase/messaging";
 import API_URL from "../config";
 import {
