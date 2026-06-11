@@ -29,9 +29,10 @@ import chatbot from "../../assets/images/chat-bot 1.png";
 import AegisAssist from "./AegisAssist";
 import { auth, db } from "../../firebaseconfig";
 import { onAuthStateChanged } from "firebase/auth";
-
+import API_URL from "../../config";
 // CSS
 import "./Aegismap.css";
+import API_URL from "../../config";
 
 // --- PROFESSIONAL CSS-RENDERED ICONS ---
 const blueDotIcon = new L.DivIcon({
@@ -183,7 +184,7 @@ const Aegismap = () => {
     if (cachedCities) {
       setCities(JSON.parse(cachedCities));
     } else {
-      fetch("http://localhost:8000/cities")
+      fetch(`${API_URL}/cities`)
         .then((res) => res.json())
         .then((data) => {
           setCities(data);
@@ -212,7 +213,7 @@ const Aegismap = () => {
       if (firebaseUser) {
         try {
           const token = await firebaseUser.getIdToken();
-          const response = await fetch("http://localhost:8000/user/profile", {
+          const response = await fetch(`${API_URL}/user/profile`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           const data = await response.json();
@@ -237,7 +238,7 @@ const Aegismap = () => {
 
     // Always update in background after a 2-second delay
     setTimeout(() => {
-      fetch("http://localhost:8000/get-shelters")
+      fetch(`${API_URL}/get-shelters`)
         .then((response) => response.json())
         .then((data) => {
           setShelters(data);
@@ -347,7 +348,7 @@ const Aegismap = () => {
       // --- 3. BACKGROUND SYNC (The "Road Lane" Logic) ---
       try {
         console.log("🚦 Background Lane: Syncing map data...");
-        const res = await fetch("http://localhost:8000/update-from-chip", {
+        const res = await fetch(`${API_URL}/update-from-chip`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -450,7 +451,7 @@ const Aegismap = () => {
   const [isNotificationVisible, setIsNotificationVisible] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   useEffect(() => {
-    fetch("http://localhost:8000/notifications")
+    fetch(`${API_URL}/notifications`)
       .then((res) => res.json())
       .then((data) => {
         setNotifications(data);
@@ -465,12 +466,13 @@ const Aegismap = () => {
       const unreadNotifications = notifications.filter((n) => !n.is_read);
       await Promise.all(
         unreadNotifications.map((notif) =>
-          fetch(`http://localhost:8000/notifications/${notif.id}/read`, {
+          fetch(`${API_URL}/notifications/${notif.id}/read`, {
             method: "PUT",
           }),
         ),
       );
-      const res = await fetch("http://localhost:8000/notifications");
+      const res = await fetch(`${API_URL}/notifications`);
+
       const data = await res.json();
       setNotifications(data);
     } catch (error) {}

@@ -9,7 +9,7 @@ import {
   orderBy,
   getDocs,
 } from "firebase/firestore";
-import { auth, db } from "../../src/firebaseconfig.js";
+import { auth, db } from "../firebaseconfig";
 import { onAuthStateChanged } from "firebase/auth";
 import {
   Search,
