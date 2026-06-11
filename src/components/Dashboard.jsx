@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { db as offlineDB } from "../db"; // We use offlineDB to avoid conflict with Firestore 'db'
 import { Send } from "lucide-react"; // Optional: for a nice SMS icon
-
+import API_URL from "../../config";
 import { getMessaging, getToken } from "firebase/messaging";
-
+import API_URL from "../config";
 import {
   AlertTriangle,
   CloudRain,
@@ -349,7 +349,7 @@ const DashboardCitizen = ({ weather, forecast, alert, shelters }) => {
     const fetchNgoData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8000/get-operations?t=${Date.now()}`,
+          `${API_URL}/get-operations?t=${Date.now()}`,
         );
 
         if (!response.ok) throw new Error("Backend not responding");
@@ -905,7 +905,7 @@ const DashboardCitizen = ({ weather, forecast, alert, shelters }) => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-    fetch("http://localhost:8000/update-from-chip", {
+    fetch(`${API_URL}/update-from-chip`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -1009,7 +1009,7 @@ const DashboardCitizen = ({ weather, forecast, alert, shelters }) => {
           });
 
           if (currentToken) {
-            await fetch("http://localhost:8000/subscribe", {
+            await fetch(`${API_URL}/subscribe`, {
               method: "POST",
 
               headers: { "Content-Type": "application/json" },
@@ -1073,7 +1073,7 @@ const DashboardCitizen = ({ weather, forecast, alert, shelters }) => {
         if (navigator.onLine) {
           try {
             const token = await user.getIdToken();
-            const response = await fetch("http://localhost:8000/user/profile", {
+            const response = await fetch(`${API_URL}/user/profile`, {
               headers: { Authorization: `Bearer ${token}` },
             });
             const data = await response.json();

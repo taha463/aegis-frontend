@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getMessaging, onMessage } from "firebase/messaging";
+import API_URL from "../../config";
 import {
   collection,
   query,
@@ -50,7 +51,7 @@ const Header = ({ user, onMenuClick }) => {
         .filter(Boolean);
 
       if (cityList.length === 0) {
-        const res = await fetch("http://localhost:8000/cities");
+        const res = await fetch(`${API_URL}/cities`);
         cityList = await res.json();
       }
 
@@ -76,7 +77,7 @@ const Header = ({ user, onMenuClick }) => {
       }
 
       // 2. Fetch fresh ones from server
-      const response = await fetch("http://localhost:8000/notifications");
+      const response = await fetch(`${API_URL}/notifications`);
       let data = await response.json();
 
       const twoDaysAgo = new Date();
@@ -263,12 +264,9 @@ const Header = ({ user, onMenuClick }) => {
 
     if (!String(id).startsWith("sys_")) {
       try {
-        const response = await fetch(
-          `http://localhost:8000/notifications/${id}`,
-          {
-            method: "DELETE",
-          },
-        );
+        const response = await fetch(`${API_URL}/notifications/${id}`, {
+          method: "DELETE",
+        });
 
         // If the backend refuses to delete it (e.g., 404 or 500 error)
         if (!response.ok) {

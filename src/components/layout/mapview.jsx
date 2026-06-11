@@ -13,7 +13,7 @@ import "leaflet/dist/leaflet.css";
 
 // Assets
 import chatbot from "../../assets/images/chat-bot 1.png";
-
+import API_URL from "../../config";
 // Components & Firebase
 import { db } from "../../firebaseconfig";
 import { collection, query, onSnapshot, orderBy } from "firebase/firestore";
@@ -116,7 +116,7 @@ const Mapview = () => {
   useEffect(() => {
     const fetchShelters = async () => {
       try {
-        const response = await fetch("http://localhost:8000/get-shelters");
+        const response = await fetch(`${API_URL}/get-shelters`);
         if (!response.ok) throw new Error("Failed to fetch shelters");
         const data = await response.json();
         setShelters(data);
@@ -131,7 +131,7 @@ const Mapview = () => {
 
   // Fetch river gates from AI model
   useEffect(() => {
-    fetch("http://localhost:8000/update-from-chip", {
+    fetch(`${API_URL}/update-from-chip`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

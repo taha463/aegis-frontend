@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
+import API_URL from "../../config";
 import {
   LayoutDashboard,
   Map,
@@ -92,7 +93,7 @@ const NGOLayout = () => {
 
   // ── Fetch cities ────────────────────────────
   useEffect(() => {
-    fetch("http://localhost:8000/cities")
+    fetch(`${API_URL}/cities`)
       .then((res) => res.json())
       .then((data) => setCities(data))
       .catch((err) => console.error("API error:", err));
@@ -123,7 +124,7 @@ const NGOLayout = () => {
     // 1. Fetch only Aegis System Alerts from Python
     const fetchSystemAlerts = async () => {
       try {
-        const response = await fetch("http://localhost:8000/ngo-alerts");
+        const response = await fetch(`${API_URL}/ngo-alerts`);
         let data = await response.json();
 
         // Remove 2-day old alerts AND filter out citizen contact forms
@@ -220,8 +221,8 @@ const NGOLayout = () => {
         // Delete SOS directly from Firebase
         await deleteDoc(doc(db, "emergency_requests", id));
       } else {
-        // Delete System alert from Python backend${id}\`, { method: "DELETE" });`
-        await fetch(`http://localhost:8000/ngo-alerts/${id}`, {
+        // Delete System alert from Python backend
+        await fetch(`${API_URL}/ngo-alerts/${id}`, {
           method: "DELETE",
         });
       }
@@ -245,7 +246,7 @@ const NGOLayout = () => {
         unreadNotifications.map((notif) => {
           // Ignore SOS alerts (Firebase) and temporary live alerts ("sys_")
           if (!notif.isSos && !String(notif.id).startsWith("sys_")) {
-            return fetch(`http://localhost:8000/ngo-alerts/${notif.id}/read`, {
+            return fetch(`${API_URL}/ngo-alerts/${notif.id}/read`, {
               method: "PUT",
             });
           }
@@ -311,7 +312,7 @@ const NGOLayout = () => {
       if (firebaseUser) {
         try {
           const token = await firebaseUser.getIdToken();
-          const response = await fetch("http://localhost:8000/user/profile", {
+          const response = await fetch(`${API_URL}/user/profile`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           const data = await response.json();

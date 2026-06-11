@@ -20,6 +20,7 @@ import { LogOut } from "lucide-react";
 import { auth, db } from "../../firebaseconfig"; // Import your firebase config
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
+import API_URL from "../../config";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -71,7 +72,7 @@ const Header = () => {
         try {
           // ✅ FIX 2: use backend API just like NGOLayout does
           const token = await currentUser.getIdToken();
-          const response = await fetch("http://localhost:8000/user/profile", {
+          const response = await fetch(`${API_URL}/user/profile`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           const data = await response.json();
