@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { X, Send, Mic, Loader2 } from "lucide-react";
 import "./AegisAssist.css";
 import { auth } from "../../firebaseconfig";
-
+import API_URL from "../../config";
 import { onAuthStateChanged } from "firebase/auth"; // Added to track auth state changes
 
 // Assets
@@ -12,7 +12,7 @@ const getGreeting = () => {
   const hour = new Date().getHours();
   if (hour >= 5 && hour < 12) return "GOOD MORNING";
   if (hour >= 12 && hour < 17) return "GOOD AFTERNOON";
-  if (hour >= 17 && hour < 21) return "GOOD EVENING";
+  if (hour >= 17 && hour < 20) return "GOOD EVENING";
   return "GOOD NIGHT";
 };
 
