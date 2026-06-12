@@ -3,18 +3,13 @@
   "name": "Aegis: AI Flood Guard",
   "icons": [
     {
-      "src": "maskable_icon.png",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/png"
-    },
-    {
-      "src": "maskable_icon.png",
+      "src": "maskable_icon_x192.png",
       "type": "image/png",
       "sizes": "192x192",
       "purpose": "any maskable"
     },
     {
-      "src": "maskable_icon.png",
+      "src": "maskable_icon_x512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
