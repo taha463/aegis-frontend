@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { Minus, Plus } from "lucide-react"; // only used in FAQ
-
+import API_URL from "../../config";
 // Shared Components
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
@@ -56,7 +56,7 @@ const Forhelp = () => {
       if (user) {
         try {
           const token = await user.getIdToken();
-          const response = await fetch("http://localhost:8000/user/profile", {
+          const response = await fetch(`${API_URL}/user/profile`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           const data = await response.json();
