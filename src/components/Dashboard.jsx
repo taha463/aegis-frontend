@@ -174,7 +174,7 @@ const DashboardCitizen = ({ weather, forecast, alert, shelters }) => {
 
 .spin-anim { animation: spin 1s linear infinite; }
 
-.loader-container { display: flex; justify-content: center; align-items: center; height: 100vh; width: 100vw; position: relative; background-color: #fbfbfb; }
+.loader-container { display: flex; justify-content: center; align-items: center; height: 100dvh; width: 100vw; position: relative; background-color: #fbfbfb; }
 
 .spinner { position: relative; width: 2.5em; height: 2.5em; transform: rotate(165deg); }
 
@@ -320,6 +320,22 @@ const DashboardCitizen = ({ weather, forecast, alert, shelters }) => {
   const [prevCityName, setPrevCityName] = useState("");
 
   const originalLocationRef = useRef(null);
+
+  // ✅ THE MASTER SCROLL RESET (Fixes the Mobile Frozen Screen)
+  useEffect(() => {
+    // 1. Force the HTML and Body to unlock scrolling
+    document.body.style.overflow = "auto";
+    document.documentElement.style.overflow = "auto";
+
+    // 2. Force the browser to start at the top of the dashboard
+    window.scrollTo(0, 0);
+
+    // 3. Cleanup function just in case
+    return () => {
+      document.body.style.overflow = "auto";
+      document.documentElement.style.overflow = "auto";
+    };
+  }, []); // Empty array ensures this runs once immediately when the dashboard loads
 
   // 🚨 ULTIMATE OFFLINE FAILSAFE 🚨
   // If the network is a "black hole" and requests hang infinitely,
@@ -1525,7 +1541,7 @@ const DashboardCitizen = ({ weather, forecast, alert, shelters }) => {
 
             width: "100vw",
 
-            height: "100vh",
+            height: "100dvh",
 
             backgroundColor: "rgba(0,0,0,0.6)",
 
