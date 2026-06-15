@@ -627,7 +627,7 @@ const Header = ({ user, onMenuClick }) => {
               position: "relative",
               display: "flex",
               alignItems: "center",
-              zIndex: 10,
+              zIndex: 5,
             }}
           >
             <div
@@ -675,7 +675,7 @@ const Header = ({ user, onMenuClick }) => {
                   backgroundColor: "white",
                   borderRadius: "1rem",
                   boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
-                  zIndex: 50,
+                  zIndex: 10,
                   border: "1px solid #E5E7EB",
                   listStyle: "none",
                   padding: 0,

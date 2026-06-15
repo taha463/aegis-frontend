@@ -818,7 +818,7 @@ const Aegismap = () => {
                     position: "absolute",
                     top: "20px",
                     right: "20px",
-                    zIndex: 1000,
+                    zIndex: 500,
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "flex-end",
