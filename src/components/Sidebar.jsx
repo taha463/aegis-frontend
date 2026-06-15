@@ -45,7 +45,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           position: "fixed",
           inset: 0,
           backgroundColor: "rgba(0,0,0,0.5)",
-          zIndex: 40,
+          zIndex: 99998,
           display: isOpen ? "block" : "none",
           backdropFilter: "blur(4px)",
           fontFamily: "Open Sans, sans-serif",
@@ -65,7 +65,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           border: "1px solid #f8f8f8",
           display: "flex",
           flexDirection: "column",
-          zIndex: 50,
+          zIndex: 99999,
         }}
       >
         <div
