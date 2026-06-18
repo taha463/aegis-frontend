@@ -3,7 +3,6 @@ import { MapPin, Mail, Phone } from "lucide-react";
 import "./Contact.css";
 import { useScrollReveal } from "../../hooks/useScrollReveal"; // 1. Hook Imported
 import Swal from 'sweetalert2';
-import API_BASE_URL from "../../apiConfig";
 const Contact = () => {
   // 2. Initialize the hook
   useScrollReveal();
@@ -27,7 +26,7 @@ const Contact = () => {
     e.preventDefault();
     try {
       console.log("📤 Sending:", contactData);
-      const res = await fetch(`${API_BASE_URL}/submit`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/submit`, {
         method: "POST",
         headers: {
           "Accept": "application/json",
