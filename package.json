@@ -30,7 +30,9 @@
     "dev": "vite",
     "build": "vite build",
     "start": "vite",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prebuild": "node generate-sw.js",
+    "predev": "node generate-sw.js"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",
