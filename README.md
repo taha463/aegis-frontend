@@ -6,7 +6,7 @@
 ![Frontend](https://img.shields.io/badge/frontend-React%20%2B%20Vite-61DAFB)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
-**[🌐 Live Site](https://aegis-frontend-8jn6.onrender.com/) · [🎥 3-Min Demo Video](./github_pictures_for_readme_file/Video%20Project.mp4)**
+**[🌐 Live Site](https://aegis-frontend-8jn6.onrender.com/) · [🎥 3-Min Demo Video] https://jumpshare.com/share/IshBW0xz9nAHmQstCIas**
 
 > ⚠️ **Note:** This repository contains the **frontend only**. The backend (prediction pipeline, AI arbitration engine, alerting, and NGO coordination services) is closed-source and not included here. This repo showcases the client architecture, UI, and how it consumes the live API.
 
