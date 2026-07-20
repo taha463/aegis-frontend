@@ -3,7 +3,6 @@ import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
-  // Add this inside the export default defineConfig({ ... })
   build: {
     rollupOptions: {
       output: {
@@ -15,7 +14,6 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
-      // Include assets that aren't picked up by the glob pattern
       includeAssets: [
         "favicon.ico",
         "apple-touch-icon.png",
@@ -26,7 +24,7 @@ export default defineConfig({
         name: "Aegis - Flood Safety",
         short_name: "Aegis",
         description: "AI-powered flood detection and safety assistant.",
-        theme_color: "#016335", // Updated to your Aegis Green
+        theme_color: "#016335",
         background_color: "#ffffff",
         display: "standalone",
         scope: "/",
@@ -34,7 +32,7 @@ export default defineConfig({
         orientation: "portrait",
         icons: [
           {
-            src: "copy-removebg-preview.png", // Using your logo
+            src: "copy-removebg-preview.png",
             sizes: "192x192",
             type: "image/png",
             purpose: "any maskable",
@@ -53,6 +51,9 @@ export default defineConfig({
         // 2. Handle Single Page App (SPA) routing
         // This ensures if you refresh on /dashboard while offline, it still loads
         navigateFallback: "index.html",
+
+        // 🟢 THE FIX: Never apply the SPA fallback to the Firebase service worker
+        navigateFallbackDenylist: [/^\/firebase-messaging-sw\.js$/],
 
         // 3. Runtime Caching for dynamic content
         runtimeCaching: [
