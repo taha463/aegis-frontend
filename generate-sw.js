@@ -20,13 +20,14 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
+  const severity = payload.data?.severity || "SAFE";
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
     icon: "/logo192.png",
     badge: "/logo192.png",
-    vibrate: [200, 100, 200, 100, 200],
-    requireInteraction: payload.notification.title.includes("🚨"),
+    vibrate: severity === "DANGER" ? [200, 100, 200, 100, 200] : [100],
+    requireInteraction: severity === "DANGER",
   };
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
