@@ -11,6 +11,7 @@
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^13.5.0",
     "dexie": "^4.4.2",
+    "dotenv": "^17.4.2",
     "firebase": "^12.8.0",
     "leaflet": "^1.9.4",
     "lottie-react": "^2.4.1",
