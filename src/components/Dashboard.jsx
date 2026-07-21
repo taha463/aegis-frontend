@@ -1015,7 +1015,9 @@ const DashboardCitizen = ({ weather, forecast, alert, shelters }) => {
         if (permission === "granted") {
           const messaging = getMessaging();
 
-          const registration = await navigator.serviceWorker.ready;
+          const registration = await navigator.serviceWorker.register(
+            "/firebase-messaging-sw.js",
+          );
 
           const currentToken = await getToken(messaging, {
             vapidKey:
