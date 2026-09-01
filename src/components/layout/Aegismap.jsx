@@ -33,6 +33,9 @@ import API_URL from "../../config";
 // CSS
 import "./Aegismap.css";
 
+// CARTO API Key from Vite Environment
+const CARTO_KEY = import.meta.env.VITE_CARTO_API_KEY || "";
+
 // --- PROFESSIONAL CSS-RENDERED ICONS ---
 const blueDotIcon = new L.DivIcon({
   className: "custom-user-marker",
@@ -61,46 +64,10 @@ const MapController = ({ position }) => {
   const map = useMap();
   useEffect(() => {
     if (position) {
-      // UPGRADED: Zoom level 15 provides the best street-level detail
       map.flyTo(position, 15, { animate: true, duration: 2.0 });
     }
   }, [position, map]);
   return null;
-};
-
-// --- DYNAMIC AVATAR COLOR GENERATOR (kept for completeness)
-const getAvatarColor = (name) => {
-  if (!name) return "#047857";
-  const char = name.charAt(0).toUpperCase();
-  const colorMap = {
-    A: "#ef4444",
-    B: "#f97316",
-    C: "#f59e0b",
-    D: "#84cc16",
-    E: "#22c55e",
-    F: "#10b981",
-    G: "#14b8a6",
-    H: "#06b6d4",
-    I: "#0ea5e9",
-    J: "#3b82f6",
-    K: "#6366f1",
-    L: "#8b5cf6",
-    M: "#047857",
-    N: "#d946ef",
-    O: "#f43f5e",
-    P: "#e11d48",
-    Q: "#ef4444",
-    R: "#f97316",
-    S: "#f59e0b",
-    T: "#3b82f6",
-    U: "#22c55e",
-    V: "#10b981",
-    W: "#14b8a6",
-    X: "#06b6d4",
-    Y: "#0ea5e9",
-    Z: "#8b5cf6",
-  };
-  return colorMap[char] || "#047857";
 };
 
 const LegendItem = ({ color, label, hasSwitch, checked, onChange }) => (
@@ -139,7 +106,7 @@ const Aegismap = () => {
   const [preloadedStatus, setPreloadedStatus] = useState("SAFE");
   const [profile, setProfile] = useState();
   const [loading, setLoading] = useState(true);
-  const [gatesLoaded, setGatesLoaded] = useState(false); // NEW: track gate data readiness
+  const [gatesLoaded, setGatesLoaded] = useState(false);
   const pakistanCenter = [30.3753, 69.3451];
   const [userLocation, setUserLocation] = useState(null);
   const [shelters, setShelters] = useState([]);
@@ -157,7 +124,6 @@ const Aegismap = () => {
   const [roadRoute, setRoadRoute] = useState(null);
   const [isFetchingData, setIsFetchingData] = useState(true);
   const pakistanBounds = [
-    // <-- ADD THIS LINE
     [23.6345, 60.8728],
     [37.0841, 77.8375],
   ];
@@ -235,7 +201,6 @@ const Aegismap = () => {
       setShelters(JSON.parse(cachedShelters));
     }
 
-    // Always update in background after a 2-second delay
     setTimeout(() => {
       fetch(`${API_URL}/get-shelters`)
         .then((response) => response.json())
@@ -245,6 +210,7 @@ const Aegismap = () => {
         });
     }, 2000);
   }, []);
+
   // --- GET USER GPS LOCATION ---
   const getUserGPSLocation = () => {
     if ("geolocation" in navigator) {
@@ -269,13 +235,12 @@ const Aegismap = () => {
     }
   };
 
-  // --- HANDLE LOCATION FROM URL OR LOCALSTORAGE ---
   // --- UNIFIED DATA INITIALIZATION ---
   useEffect(() => {
     const initializeMap = async () => {
       const THREE_HOURS = 3 * 60 * 60 * 1000;
 
-      // --- 1. INSTANT SNAPSHOT LOAD ---
+      // 1. INSTANT SNAPSHOT LOAD
       const cachedMap = localStorage.getItem("aegis_map_snapshot");
       let hasFreshCache = false;
 
@@ -288,18 +253,17 @@ const Aegismap = () => {
           setUserLocation(userLoc);
           setCityName(city);
           setGatesLoaded(true);
-          setLoading(false); // STOP the loader immediately!
+          setLoading(false);
           hasFreshCache = true;
           console.log("⚡ Map snapshot loaded instantly from memory.");
         }
       }
 
-      // Only show full-screen loader if we DON'T have fresh data
       if (!hasFreshCache) {
         setLoading(true);
       }
 
-      // --- 2. DETERMINE TARGET COORDINATES ---
+      // 2. DETERMINE TARGET COORDINATES
       let targetLat = 30.3753;
       let targetLon = 69.3451;
       let targetCity = "Pakistan";
@@ -307,22 +271,17 @@ const Aegismap = () => {
       const searchParams = new URLSearchParams(locationUrl.search);
       const dashboardRedirect = localStorage.getItem("aegis_map_location");
 
-      // A. Priority: URL Search Params
       if (searchParams.get("lat")) {
         targetLat = parseFloat(searchParams.get("lat"));
         targetLon = parseFloat(searchParams.get("lon"));
         targetCity = searchParams.get("city") || "Searched Area";
-      }
-      // B. Priority: Redirect from Dashboard
-      else if (dashboardRedirect) {
+      } else if (dashboardRedirect) {
         const locData = JSON.parse(dashboardRedirect);
         targetLat = locData.lat;
         targetLon = locData.lon;
         targetCity = locData.city;
         if (locData.evacTarget) setPreloadedEvacTarget(locData.evacTarget);
-      }
-      // C. Priority: Live GPS
-      else if ("geolocation" in navigator) {
+      } else if ("geolocation" in navigator) {
         try {
           const position = await new Promise((resolve, reject) => {
             navigator.geolocation.getCurrentPosition(resolve, reject, {
@@ -344,7 +303,7 @@ const Aegismap = () => {
         }
       }
 
-      // --- 3. BACKGROUND SYNC (The "Road Lane" Logic) ---
+      // 3. BACKGROUND SYNC
       try {
         console.log("🚦 Background Lane: Syncing map data...");
         const res = await fetch(`${API_URL}/update-from-chip`, {
@@ -364,7 +323,6 @@ const Aegismap = () => {
           if (data.river_network_status) {
             setRiverGates(data.river_network_status);
 
-            // UPDATE SNAPSHOT
             localStorage.setItem(
               "aegis_map_snapshot",
               JSON.stringify({
@@ -381,7 +339,6 @@ const Aegismap = () => {
         }
       } catch (err) {
         console.error("❌ Map background sync failed:", err);
-        // Ensure loader disappears even if network fails
         setGatesLoaded(true);
       } finally {
         setLoading(false);
@@ -390,7 +347,6 @@ const Aegismap = () => {
 
     initializeMap();
 
-    // Cleanup dashboard redirect trigger after 3 seconds
     const timer = setTimeout(
       () => localStorage.removeItem("aegis_map_location"),
       3000,
@@ -398,18 +354,15 @@ const Aegismap = () => {
     return () => clearTimeout(timer);
   }, [locationUrl.search]);
 
-  // --- FETCH ROUTE (OSRM) - FIXED Persistence ---
+  // --- FETCH ROUTE (OSRM) ---
   useEffect(() => {
     const fetchRoute = async () => {
-      // 1. Check if we have a location to start from
       if (!userLocation) return;
 
-      // 2. Identify the target (Priority: Live API > Preloaded Storage)
       const plan = apiData?.evacuation_plan;
       const targetLat = plan?.target_lat || preloadedEvacTarget?.lat;
       const targetLon = plan?.target_lon || preloadedEvacTarget?.lon;
 
-      // 3. Logic Sync: If status is Danger OR we have a preloaded target, SHOW ROUTE
       const shouldShowRoute =
         apiData?.status?.includes("DANGER") ||
         apiData?.status?.includes("WARNING") ||
@@ -420,7 +373,6 @@ const Aegismap = () => {
       if (shouldShowRoute && targetLat && targetLon) {
         const [uLat, uLon] = userLocation;
         try {
-          // International Standard: OSRM provides the 'Safest' road route
           const response = await fetch(
             `https://router.project-osrm.org/route/v1/driving/${uLon},${uLat};${targetLon},${targetLat}?overview=full&geometries=geojson`,
           );
@@ -442,7 +394,6 @@ const Aegismap = () => {
       }
     };
     fetchRoute();
-    // Dependency includes riverGates to ensure it re-checks when map features change
   }, [userLocation, apiData, preloadedEvacTarget, riverGates]);
 
   // --- NOTIFICATION LOGIC ---
@@ -471,7 +422,6 @@ const Aegismap = () => {
         ),
       );
       const res = await fetch(`${API_URL}/notifications`);
-
       const data = await res.json();
       setNotifications(data);
     } catch (error) {}
@@ -510,7 +460,6 @@ const Aegismap = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isViewOptionsOpen]);
 
-  // --- COMBINED LOADING STATE: both profile and gates must be ready ---
   if ((loading || !gatesLoaded) && riverGates.length === 0) {
     return (
       <div className="loader-container">
@@ -557,15 +506,13 @@ const Aegismap = () => {
                   boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
                 }}
               >
-                {/* STABLE KEY – map mounts only once */}
                 <MapContainer
                   key="aegis-stable-map"
                   center={userLocation || pakistanCenter}
                   zoom={6}
-                  minZoom={5} // Prevents looking at the whole world
+                  minZoom={5}
                   maxZoom={20}
                   scrollWheelZoom={true}
-                  // The "Invisible Wall" - Keeps the user inside Pakistan
                   maxBounds={[
                     [23.6345, 60.8728],
                     [37.0841, 77.8375],
@@ -573,39 +520,31 @@ const Aegismap = () => {
                   maxBoundsViscosity={1.0}
                   style={{ height: "100%", width: "100%", zIndex: 1 }}
                 >
-                   
-                  <>
-                    {/* Define your CARTO key at the top of the file or inline */}
-                    const CARTO_KEY = process.env.REACT_APP_CARTO_API_KEY; //
-                    Use import.meta.env.VITE_CARTO_API_KEY for Vite
-                    {/* Inside MapContainer */}
-                    <>
-                      {/* Layer 1: Background Tiles (No Labels) */}
-                      <TileLayer
-                        url={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png?key=${CARTO_KEY}`}
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-                        subdomains="abcd"
-                        maxZoom={20}
-                        keepBuffer={8}
-                        updateWhenIdle={true}
-                        updateWhenZooming={false}
-                      />
+                  <TileLayer
+                    url={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png${CARTO_KEY ? `?key=${CARTO_KEY}` : ""}`}
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                    subdomains="abcd"
+                    maxZoom={20}
+                    keepBuffer={8}
+                    updateWhenIdle={true}
+                    updateWhenZooming={false}
+                  />
 
-                      {/* Layer 2: Transparent Labels Overlay */}
-                      <TileLayer
-                        url={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png?key=${CARTO_KEY}`}
-                        subdomains="abcd"
-                        maxZoom={20}
-                        zIndex={10}
-                        keepBuffer={8}
-                        updateWhenIdle={true}
-                        updateWhenZooming={false}
-                        className="map-tiles-optimized"
-                      />
-                    </>
-                  </>
+                  <TileLayer
+                    url={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png${CARTO_KEY ? `?key=${CARTO_KEY}` : ""}`}
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                    subdomains="abcd"
+                    maxZoom={20}
+                    zIndex={10}
+                    keepBuffer={8}
+                    updateWhenIdle={true}
+                    updateWhenZooming={false}
+                    className="map-tiles-optimized"
+                  />
+
                   <ZoomHandler setZoom={setZoomLevel} />
                   <MapController position={userLocation} />
+
                   {riverGates.map((gate, idx) => {
                     const isSafe = gate.status.includes("SAFE");
                     const isWarning = gate.status.includes("WARNING");
@@ -670,6 +609,7 @@ const Aegismap = () => {
                       </CircleMarker>
                     );
                   })}
+
                   {showFloods &&
                     riverGates.map((gate, idx) => {
                       if (
@@ -712,6 +652,7 @@ const Aegismap = () => {
                       }
                       return null;
                     })}
+
                   {showRoutes &&
                     roadRoute &&
                     (apiData?.status?.includes("DANGER") ||
@@ -748,6 +689,7 @@ const Aegismap = () => {
                         </Tooltip>
                       </Polyline>
                     )}
+
                   {zoomLevel >= 7 &&
                     shelters.map((shelter) => (
                       <Marker
@@ -776,6 +718,7 @@ const Aegismap = () => {
                         </Popup>
                       </Marker>
                     ))}
+
                   {userLocation && (
                     <Marker position={userLocation} icon={blueDotIcon}>
                       <Popup>
