@@ -575,31 +575,34 @@ const Aegismap = () => {
                 >
                    
                   <>
-                    {/* Layer 1: The beautiful Voyager background (No Labels) */}
-                    <TileLayer
-                      url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png"
-                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                      subdomains="abcd"
-                      maxZoom={20}
-                      // --- ADD THESE THREE LINES FOR SPEED ---
-                      keepBuffer={8}
-                      updateWhenIdle={true}
-                      updateWhenZooming={false}
-                    />
+                    {/* Define your CARTO key at the top of the file or inline */}
+                    const CARTO_KEY = process.env.REACT_APP_CARTO_API_KEY; //
+                    Use import.meta.env.VITE_CARTO_API_KEY for Vite
+                    {/* Inside MapContainer */}
+                    <>
+                      {/* Layer 1: Background Tiles (No Labels) */}
+                      <TileLayer
+                        url={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png?key=${CARTO_KEY}`}
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                        subdomains="abcd"
+                        maxZoom={20}
+                        keepBuffer={8}
+                        updateWhenIdle={true}
+                        updateWhenZooming={false}
+                      />
 
-                    {/* Layer 2: The "Only Labels" layer - Transparent and Sharp */}
-                    {/* Note: This renders labels clearly. OSM data in Pakistan automatically 
-      shows Urdu names for major cities and districts! */}
-                    <TileLayer
-                      url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png"
-                      subdomains="abcd"
-                      maxZoom={20}
-                      zIndex={10} // Ensures labels stay on top of flood markers
-                      keepBuffer={8}
-                      updateWhenIdle={true}
-                      updateWhenZooming={false}
-                      className="map-tiles-optimized"
-                    />
+                      {/* Layer 2: Transparent Labels Overlay */}
+                      <TileLayer
+                        url={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png?key=${CARTO_KEY}`}
+                        subdomains="abcd"
+                        maxZoom={20}
+                        zIndex={10}
+                        keepBuffer={8}
+                        updateWhenIdle={true}
+                        updateWhenZooming={false}
+                        className="map-tiles-optimized"
+                      />
+                    </>
                   </>
                   <ZoomHandler setZoom={setZoomLevel} />
                   <MapController position={userLocation} />
