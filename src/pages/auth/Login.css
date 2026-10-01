@@ -249,12 +249,23 @@
   cursor: pointer;
   margin-top: 4px;
   letter-spacing: 0.5px;
-  transition: all 0.25s ease;
+  /* Sirf border-color badlega, size nahi */
+  /* Smooth transition bina shake ke */
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .login-button:hover {
   background-color: none !important;
   color: #000000 !important;
+  box-shadow: inset 0 0 0 0.4px #5c3b23ec;
+  /* Smooth transition bina shake ke */
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .signup-text {

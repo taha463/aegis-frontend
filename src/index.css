@@ -9,6 +9,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* SweetAlert page jumping / layout shift fix */
+body.swal2-shown {
+  overflow-y: auto !important;
+  padding-right: 0 !important;
+}
+
 code {
   font-family:
     source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;

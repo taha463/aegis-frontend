@@ -131,7 +131,8 @@ const Mapview = () => {
 
   // Fetch river gates from AI model
   useEffect(() => {
-    fetch(`${API_URL}/update-from-chip`, {
+    fetch(`${API_URL}/update-from-chip`
+      , {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

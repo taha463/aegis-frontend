@@ -128,7 +128,9 @@ const NGOHelp = () => {
                   <strong>Emergency Helpline:</strong> 1122
                 </li>
                 <li>
-                  <strong>Email Support:</strong> support@aegis-app.com
+                  <strong>Email Support:</strong> support
+                  
+                  @aegis-app.com
                 </li>
               </ul>
             </div>

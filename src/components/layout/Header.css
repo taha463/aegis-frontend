@@ -102,21 +102,41 @@
 .nav-link {
   color: var(--color-white);
   font-size: 1.1rem;
-  font-weight: 300;
+  /* Font weight dono states mein same rakhein taake width na badle */
+  font-weight: 400;
   text-decoration: none;
+  opacity: 0.85;
+  display: inline-block;
+  position: relative;
+
+  /* Smooth color transition */
   transition:
-    color 0.3s,
-    opacity 0.3s;
-  opacity: 0.9;
+    color 0.25s ease,
+    opacity 0.25s ease;
 }
 
-/* HOVER COLOR: SAND */
+/* HOVER: Bilkul smooth, koi shake ya bounce nahi */
 .nav-link:hover {
   opacity: 1;
-  font-weight: 400;
   color: var(--color-sand);
+  /* font-weight change yahan se bilkul remove kar dein */
 }
 
+/* Optional: Premium brand touch (Subtle underline slide) */
+.nav-link::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background-color: var(--color-sand);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
 /* --- BUTTONS --- */
 .header-actions {
   display: flex;
