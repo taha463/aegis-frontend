@@ -424,9 +424,9 @@ const DashboardCitizen = ({ weather, forecast, alert, shelters }) => {
         "aegis_map_location",
 
         JSON.stringify({
-          lat: userLocation[0],
+          lat: null,
 
-          lon: userLocation[1],
+          lon: null,
 
           city: geoCityName,
 
