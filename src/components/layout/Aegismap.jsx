@@ -327,7 +327,6 @@ const Aegismap = () => {
               "aegis_map_snapshot",
               JSON.stringify({
                 gates: data.river_network_status,
-                userLoc: [targetLat, targetLon],
                 city: targetCity,
                 timestamp: Date.now(),
               }),

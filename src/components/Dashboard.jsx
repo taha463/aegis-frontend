@@ -785,7 +785,7 @@ const DashboardCitizen = ({ weather, forecast, alert, shelters }) => {
             // ✅ ADD THIS: Persist so offline load can use it
             localStorage.setItem(
               "aegis_last_location",
-              JSON.stringify({ lat, lon, city }),
+              JSON.stringify({ city }),
             );
             setUserLocation([lat, lon]);
             setGeoCityName(city);
@@ -794,7 +794,7 @@ const DashboardCitizen = ({ weather, forecast, alert, shelters }) => {
             originalLocationRef.current = { lat, lon, city: "Local Area" };
             localStorage.setItem(
               "aegis_last_location",
-              JSON.stringify({ lat, lon, city: "Local Area" }),
+              JSON.stringify({ city: "Local Area" }),
             );
             setUserLocation([lat, lon]);
             setGeoCityName("Local Area");
