@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import "./Hero.css";
-import chatbotIcon from "../../assets/images/chat-bot 1.png";
 import AegisAssist from "./AegisAssist";
+import Onee from "../onee-avatar/Onee";
 
 const Hero = () => {
   const [showAssist, setShowAssist] = useState(false);
+  const [avatarAnim, setAvatarAnim] = useState("idle");
 
   // Helper function to wrap letters in spans with animation delays
   const animatedText = (text, startDelay = 0) => {
@@ -28,7 +29,7 @@ const Hero = () => {
 
         <div className="hero-content">
           <div className="hero-left">
-            <span className="awareness-tag">* Awareness of the Day</span>
+            <span className="awareness-tag">Awareness of the Day</span>
             <h2 className="hero-subtitle">
               Because prevention <br />
               starts with awareness
@@ -49,8 +50,16 @@ const Hero = () => {
           <div
             className="hero-chat-trigger"
             onClick={() => setShowAssist(true)}
+            onMouseEnter={() => setAvatarAnim("excited")}
+            onMouseLeave={() => setAvatarAnim("idle")}
+            style={{
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
           >
-            <img src={chatbotIcon} alt="AI Assistant" />
+            <Onee size={64} animation={avatarAnim} playing={true} loop={true} />
           </div>
         </div>
       </section>

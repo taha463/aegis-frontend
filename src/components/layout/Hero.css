@@ -128,36 +128,38 @@
 }
 
 /* --- CHATBOT TRIGGER (Bottom Left Position) --- */
+/* --- CHATBOT TRIGGER (Bottom Left Position) --- */
 .hero-chat-trigger {
-  position: fixed; /* Sticks to the screen, not the section */
-  bottom: 30px; /* Distance from bottom of the screen */
-  left: 30px; /* Distance from left of the screen */
-  width: 65px;
-  height: 65px;
-  background: white;
-  border-radius: 50%;
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  width: auto;
+  height: auto;
+  background: transparent; /* Removed white circle */
+  border-radius: 0;
+  border: none; /* Removed white border */
+  box-shadow: none; /* Removed outer circle shadow */
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Stronger shadow for visibility */
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  z-index: 9999; /* Very high Z-index to float above all other sections */
+  z-index: 9999;
   transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-  animation: floatChat 3s ease-in-out infinite;
+    transform 0.25s ease,
+    filter 0.25s ease;
+  animation: none; /* Stops the up-and-down float */
+}
+
+/* Optional subtle lift/glow on hover directly on the avatar silhouette */
+.hero-chat-trigger:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 4px 12px rgba(255, 255, 255, 0.45));
 }
 
 .hero-chat-trigger img {
   width: 40px;
   height: 40px;
   object-fit: contain;
-}
-
-.hero-chat-trigger:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
 }
 
 /* Floating Animation */

@@ -9,17 +9,22 @@ import {
 } from "lucide-react";
 import { auth } from "../firebaseconfig"; // Ensure this path is correct
 import { signOut } from "firebase/auth";
+
 // IMPORTS
 import shieldLogo from "../assets/images/Screenshot_2025-12-16_183438-removebg-preview.png";
-import chatbot from "../assets/images/chat-bot 1.png";
+
+// Import the Animated Avatar Component
+import Onee from "./onee-avatar/Onee";
 
 // Import the Chatbot Overlay Component
 import AegisAssist from "./layout/AegisAssist";
 
 const Sidebar = ({ isOpen, onClose }) => {
   const [showAssist, setShowAssist] = useState(false);
+  const [sidebarAnim, setSidebarAnim] = useState("idle");
   const location = useLocation(); // Get current path
   const navigate = useNavigate();
+
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -34,6 +39,7 @@ const Sidebar = ({ isOpen, onClose }) => {
       console.error("Error logging out: ", error);
     }
   };
+
   return (
     <>
       {showAssist && <AegisAssist onClose={() => setShowAssist(false)} />}
@@ -181,35 +187,28 @@ const Sidebar = ({ isOpen, onClose }) => {
             Map
           </Link>
 
-          {/* CHATBOT IMAGE SECTION */}
+          {/* ANIMATED AVATAR TRIGGER (No white circle) */}
           <div style={{ marginTop: "1.5rem", padding: "0 1rem" }}>
             <div
               onClick={() => setShowAssist(true)}
+              onMouseEnter={() => setSidebarAnim("excited")}
+              onMouseLeave={() => setSidebarAnim("idle")}
               style={{
-                width: "3.5rem",
-                height: "3.5rem",
-                borderRadius: "50%",
-                border: "1px solid #E5E7EB",
+                width: "fit-content",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
-                overflow: "hidden",
-                padding: "0.5rem",
-                transition: "transform 0.2s ease",
-                fontFamily: "Open Sans, sans-serif",
+                background: "transparent",
+                transition: "transform 0.2s ease, filter 0.2s ease",
               }}
               className="chatbot-trigger"
             >
-              <img
-                src={chatbot}
-                alt="Chatbot"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "contain",
-                }}
+              <Onee
+                size={58}
+                animation={sidebarAnim}
+                playing={true}
+                loop={true}
               />
             </div>
           </div>
@@ -256,7 +255,6 @@ const Sidebar = ({ isOpen, onClose }) => {
           </Link>
 
           {/* LOGOUT BUTTON */}
-          {/* LOGOUT BUTTON */}
           <button
             className="sidebar-btn"
             onClick={handleLogout}
@@ -275,7 +273,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           align-items: center;
           gap: 1px;
           text-decoration: none;
-          fontFamily: "Open Sans, sans-serif",
+          font-family: "Open Sans", sans-serif;
         }
         .logo-img { height: 35px; }
         .sidebar .logo-text-rest {
@@ -291,7 +289,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           font-weight: 700;
         }
 
-        /* --- NEW BUTTON STYLES WITH HOVER --- */
+        /* --- BUTTON STYLES WITH HOVER --- */
         .sidebar-btn {
           display: flex;
           align-items: center;
@@ -323,8 +321,8 @@ const Sidebar = ({ isOpen, onClose }) => {
         }
 
         .chatbot-trigger:hover {
-          transform: scale(1.05);
-          box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+          transform: scale(1.1);
+          filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
         }
 
         .sidebar { 
@@ -341,13 +339,13 @@ const Sidebar = ({ isOpen, onClose }) => {
 
         @media (min-width: 840px) {
           .sidebar { 
-            transform: translateX(0) !important;
-            visibility: visible !important;
+            transform: translateX(0) !important; 
+            visibility: visible !important; 
             height: calc(100vh - 2rem) !important; 
             margin: 1rem !important;               
             border-radius: 1.5rem !important;      
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03) !important;
-            border-right: 1px solid #d9d9d970 !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03) !important; 
+            border-right: 1px solid #d9d9d970 !important; 
           }
           .mobile-overlay { display: none !important; }
           .mobile-close-btn { display: none !important; }

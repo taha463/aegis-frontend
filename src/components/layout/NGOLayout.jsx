@@ -34,8 +34,8 @@ import shieldLogo from "../../assets/images/Screenshot_2025-12-16_183438-removeb
 import { auth } from "../../firebaseconfig";
 import { onAuthStateChanged } from "firebase/auth";
 
-// AegisAssist chatbot
-import chatbotIcon from "../../assets/images/chat-bot 1.png";
+// Animated Avatar & AegisAssist chatbot
+import Onee from "../onee-avatar/Onee";
 import AegisAssist from "../../components/layout/AegisAssist";
 
 // CSS — shared layout styles used by all NGO pages
@@ -72,8 +72,9 @@ const NGOLayout = () => {
   // ── Sidebar toggle ──────────────────────────
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // ── Chatbot ─────────────────────────────────
+  // ── Chatbot & Avatar Animation State ────────
   const [showChat, setShowChat] = useState(false);
+  const [avatarAnim, setAvatarAnim] = useState("idle");
   const toggleChat = () => setShowChat((prev) => !prev);
 
   // ── Profile ─────────────────────────────────
@@ -117,7 +118,7 @@ const NGOLayout = () => {
     city.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  // ── NEW: Dynamic NGO Notification Engine ──────────────────
+  // ── Dynamic NGO Notification Engine ──────────────────
   useEffect(() => {
     let systemAlerts = [];
 
@@ -148,7 +149,7 @@ const NGOLayout = () => {
       orderBy("timestamp", "desc"),
     );
     const unsubscribe = onSnapshot(q, async (snapshot) => {
-      await fetchSystemAlerts(); // Grab the latest system alerts
+      await fetchSystemAlerts();
 
       const sosAlerts = snapshot.docs.map((document) => {
         const data = document.data();
@@ -156,10 +157,10 @@ const NGOLayout = () => {
           id: document.id,
           name: ` SOS: ${data.name || "Citizen"}`,
           message: `Needs ${data.need} at Location: ${data.lat?.toFixed(3)}, ${data.lng?.toFixed(3)}`,
-          is_read: data.status !== "Pending", // If an NGO marked it active, remove red badge
+          is_read: data.status !== "Pending",
           created_at:
             data.timestamp?.toDate().toISOString() || new Date().toISOString(),
-          isSos: true, // Flag to know how to delete it later
+          isSos: true,
         };
       });
 
@@ -175,7 +176,7 @@ const NGOLayout = () => {
     return () => unsubscribe();
   }, []);
 
-  // ── FCM Foreground Listener (For live Python broadcasts) ──
+  // ── FCM Foreground Listener ──
   useEffect(() => {
     const setupFCM = async () => {
       try {
@@ -203,25 +204,22 @@ const NGOLayout = () => {
     setupFCM();
   }, []);
 
-  // ── Smart Delete Function ('X' Button) ──
+  // ── Delete Notification ──
   const handleDeleteNotification = async (e, id, isSos) => {
     e.stopPropagation();
 
-    // Remove from UI immediately
     setNotifications((prev) => prev.filter((n) => n.id !== id));
     setUnreadCount((prev) => {
       const removed = notifications.find((n) => n.id === id);
       return removed && !removed.is_read ? Math.max(0, prev - 1) : prev;
     });
 
-    if (String(id).startsWith("sys_")) return; // Skip temporary live alerts
+    if (String(id).startsWith("sys_")) return;
 
     try {
       if (isSos) {
-        // Delete SOS directly from Firebase
         await deleteDoc(doc(db, "emergency_requests", id));
       } else {
-        // Delete System alert from Python backend
         await fetch(`${API_URL}/ngo-alerts/${id}`, {
           method: "DELETE",
         });
@@ -230,21 +228,19 @@ const NGOLayout = () => {
       console.error("Failed to delete:", error);
     }
   };
+
   // ── Mark All As Read ────────────────────────
   const handleMarkAllAsRead = async () => {
-    setUnreadCount(0); // Instantly clear the red badge
+    setUnreadCount(0);
     try {
       const unreadNotifications = notifications.filter((n) => !n.is_read);
 
-      // 1. Update UI immediately so the blue unread dots disappear
       setNotifications((prev) =>
         prev.map((notif) => ({ ...notif, is_read: true })),
       );
 
-      // 2. Tell Python backend to mark ONLY System Alerts as read
       await Promise.all(
         unreadNotifications.map((notif) => {
-          // Ignore SOS alerts (Firebase) and temporary live alerts ("sys_")
           if (!notif.isSos && !String(notif.id).startsWith("sys_")) {
             return fetch(`${API_URL}/ngo-alerts/${notif.id}/read`, {
               method: "PUT",
@@ -257,6 +253,7 @@ const NGOLayout = () => {
       console.error("Error marking all as read:", error);
     }
   };
+
   // ── Dynamic Icons ──
   const getNotificationIcon = (title) => {
     const lowerTitle = (title || "").toLowerCase();
@@ -325,7 +322,6 @@ const NGOLayout = () => {
     return () => unsubscribe();
   }, []);
 
-  // ────────────────────────────────────────────
   return (
     <div className="dashboard-container">
       {/* ── AegisAssist Chatbot ── */}
@@ -616,7 +612,6 @@ const NGOLayout = () => {
                                 }}
                               />
                             )}
-                            {/* Inject dynamic icon here */}
                             {getNotificationIcon(notif.name)}
                           </div>
                           <div style={{ paddingRight: "10px" }}>
@@ -687,7 +682,7 @@ const NGOLayout = () => {
               )}
             </div>
 
-            {/* Divider — hidden on mobile via CSS */}
+            {/* Divider */}
             <div
               className="header-divider"
               style={{
@@ -759,18 +754,49 @@ const NGOLayout = () => {
           </div>
         </header>
 
-        {/* ════════════════════════════════════════
-            ✅ KEY FIX: context={{ profile }} passes
-            profile to DashboardNGO, NGOHelp, Mapview
-            so they can call useOutletContext()
-        ════════════════════════════════════════ */}
+        {/* Child Views */}
         <Outlet context={{ profile }} />
 
-        {/* ── AegisAssist Chat Widget Button ── */}
-        <div className="chat-widget" onClick={toggleChat}>
-          <img src={chatbotIcon} alt="Support" className="chat-icon" />
+        {/* ── AegisAssist Animated Avatar Trigger (Clean, transparent, no white bubble) ── */}
+        <div
+          className="chat-widget"
+          onClick={toggleChat}
+          onMouseEnter={() => setAvatarAnim("excited")}
+          onMouseLeave={() => setAvatarAnim("idle")}
+          style={{
+            position: "fixed",
+            bottom: "30px",
+            right: "30px",
+            background: "transparent",
+            backgroundColor: "transparent",
+            borderRadius: "0",
+            border: "none",
+            boxShadow: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            zIndex: 9999,
+            transition: "transform 0.2s ease, filter 0.2s ease",
+          }}
+        >
+          <Onee size={62} animation={avatarAnim} playing={true} loop={true} />
         </div>
       </main>
+
+      {/* Style overrides for the widget to strip any circular background rules */}
+      <style>{`
+        .chat-widget {
+          background: transparent !important;
+          background-color: transparent !important;
+          border: none !important;
+          box-shadow: none !important;
+        }
+        .chat-widget:hover {
+          transform: scale(1.1);
+          filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
+        }
+      `}</style>
     </div>
   );
 };
