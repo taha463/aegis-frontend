@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+# Principle of Least Privilege (CWE-275 / CodeQL)
+permissions:
+  contents: read
+
 jobs:
   quality-gate:
     name: Test & Build Quality Gate
