@@ -2,136 +2,63 @@ import React, { useState, useEffect, useRef } from "react";
 import Dashboard from "../../components/Dashboard";
 import Header from "../../components/Header";
 import Sidebar from "../../components/Sidebar";
-import { auth, db } from "../../firebaseconfig";
-import { onAuthStateChanged } from "firebase/auth";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
-import { useNavigate } from "react-router-dom";
+import { db } from "../../firebaseconfig";
 import { collection, query, onSnapshot, orderBy } from "firebase/firestore";
 import API_BASE_URL from "../../config.js";
+import { normalizeCoords } from "../../utils/location.js";
 
-const MapController = ({ position }) => {
-  // FIX: useMap comes from react-leaflet, not L
-  const map = useMap();
-
-  useEffect(() => {
-    if (position) {
-      map.flyTo(position, 13);
-    }
-  }, [position, map]);
-
-  return null;
-};
+// Domain Hooks (Conforms to Aegis System Design v1 - Section 17)
+import { useProfile } from "../../hooks/useProfile.js";
+import { useWeather } from "../../hooks/useWeather.js";
+import { useFloodRisk, useFloodForecast } from "../../hooks/useFloodRisk.js";
+import { useShelters } from "../../hooks/useShelters.js";
+import { useAlerts } from "../../hooks/useAlerts.js";
 
 const DashboardCitizen = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [userLocation, setUserLocation] = useState(null);
   const [cityName, setCityName] = useState("Locating...");
-  // Add these right below your other useStates!
   const [requests, setRequests] = useState([]);
   const [showChat, setShowChat] = useState(false);
 
+  // 1. Resilient Domain Data Layer Hooks (3-Hour In-Memory Cache)
+  const { profile, status: profileStatus } = useProfile();
+  const { weather, status: weatherStatus, relativeTime: weatherTime, ageMinutes: weatherAge } = useWeather(userLocation);
+  const { floodRisk, status: floodStatus, relativeTime: floodTime, ageMinutes: floodAge } = useFloodRisk(userLocation);
+  const { forecast, status: forecastStatus, relativeTime: forecastTime, ageMinutes: forecastAge } = useFloodForecast(userLocation);
+  const { shelters, status: sheltersStatus, relativeTime: sheltersTime, ageMinutes: sheltersAge } = useShelters(userLocation);
+  const { alert: activeAlert, status: alertStatus } = useAlerts(floodRisk, cityName);
+
   const user = {
-    name: profile?.fullName || "User", // ← fix this
+    name: profile?.fullName || "Citizen",
     email: profile?.email || "",
     location: cityName || "Locating...",
   };
 
-  const mockData = {
-    weather: {
-      temp: 30,
-      condition: "Heavy Rain",
-      windSpeed: "11 km/h",
-      lastUpdated: "2 min ago",
-    },
-    alert: {
-      location: "Lahore (Shahdara Area):",
-      details: "Heavy rainfall and rising river levels detected.",
-      action: "Evacuate Now and move to nearest safe shelter immediately.",
-      timestamp: "04:45 pm",
-      timeEstimate: "15 min ago",
-    },
-    forecast: [
-      {
-        date: "10/11",
-        dayName: "Mon",
-        volume: "145k m³/s",
-        rain: "38.9 mm",
-        level: "Heavy",
-      },
-      {
-        date: "11/11",
-        dayName: "Tue",
-        volume: "168k m³/s",
-        rain: "45.6 mm",
-        level: "Very Heavy",
-      },
-      {
-        date: "12/11",
-        dayName: "Wed",
-        volume: "190k m³/s",
-        rain: "47.3 mm",
-        level: "Moderate",
-      },
-      {
-        date: "13/11",
-        dayName: "Thu",
-        volume: "190k m³/s",
-        rain: "47.3 mm",
-        level: "Normal",
-      },
-    ],
-    shelters: [
-      { name: "Govt: Primary School", distance: "3.2 km", status: "OPEN" },
-      { name: "Shelter: Jamia Masjid", distance: "5.2 km", status: "OPEN" },
-    ],
-  };
-
-  //profile data
-  useEffect(() => {
-    // const auth = getAuth();
-
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        try {
-          const token = await firebaseUser.getIdToken();
-          const response = await fetch(`${API_BASE_URL}/user/profile`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          const data = await response.json();
-          setProfile(data);
-          // console.log(profile)
-        } catch (err) {
-          console.error("Fetch error:", err);
-        } finally {
-          setLoading(false);
-        }
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
-
+  // 2. Geolocation with Coordinate Normalization (Section 8)
   useEffect(() => {
     let watchId = null;
     if ("geolocation" in navigator) {
       watchId = navigator.geolocation.watchPosition(
         async (position) => {
           const { latitude, longitude, accuracy } = position.coords;
-          if (accuracy < 1000) {
-            setUserLocation([latitude, longitude]);
+          if (accuracy < 2000) {
+            const norm = normalizeCoords(latitude, longitude);
+            setUserLocation([norm.latitude, norm.longitude]);
+
             try {
               const res = await fetch(
-                `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`,
+                `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${norm.latitude}&lon=${norm.longitude}`,
               );
               const data = await res.json();
-              setCityName(data.address.city || data.address.town || "Taxila");
-            } catch (e) {}
+              setCityName(data.address.city || data.address.town || data.address.county || "Taxila");
+            } catch (e) {
+              setCityName("Local Area");
+            }
           }
         },
         null,
-        { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 },
+        { enableHighAccuracy: true, maximumAge: 60000, timeout: 10000 },
       );
     }
     return () => {
@@ -139,51 +66,50 @@ const DashboardCitizen = () => {
     };
   }, []);
 
-  // search bar data
-  // --- NEW STATES FOR SEARCH ---
+  // 3. Search Bar Cities
   const [cities, setCities] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const dropdownRef = useRef(null);
-  const navigate = useNavigate();
 
   const toggleChat = () => setShowChat(!showChat);
 
-  // 1. Fetch cities
   useEffect(() => {
     fetch(`${API_BASE_URL}/cities`)
       .then((res) => res.json())
       .then((data) => setCities(data))
-      .catch((err) => console.error("API error:", err));
+      .catch((err) => console.warn("[Cities] API unavailable:", err.message));
   }, []);
 
-  // 2. Real-time Emergency Requests Listener
+  // 4. Real-time Emergency Requests Listener (Firestore)
   useEffect(() => {
-    // Reference the collection created by the Citizen SOS button
-    const q = query(
-      collection(db, "emergency_requests"),
-      orderBy("timestamp", "desc"),
-    );
+    try {
+      const q = query(
+        collection(db, "emergency_requests"),
+        orderBy("timestamp", "desc"),
+      );
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const liveAlerts = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        // Convert Firebase timestamp to readable string
-        timeFormatted: doc.data().timestamp?.toDate()
-          ? doc
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const liveAlerts = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          timeFormatted: doc.data().timestamp?.toDate()
+            ? doc
               .data()
               .timestamp.toDate()
               .toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-          : "Just now",
-      }));
-      setRequests(liveAlerts);
-    });
+            : "Just now",
+        }));
+        setRequests(liveAlerts);
+      });
 
-    return () => unsubscribe(); // Cleanup listener on unmount
+      return () => unsubscribe();
+    } catch (err) {
+      console.warn("[Firestore] Emergency listener offline fallback:", err.message);
+    }
   }, []);
 
-  // 3. Close dropdown when clicking outside
+  // 5. Outside Click for Search
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -194,21 +120,10 @@ const DashboardCitizen = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const filteredCities = cities.filter((city) =>
-    city.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
-
-  if (loading) {
-    return (
-      <div className="loader-container">
-        <div className="spinner"></div>
-      </div>
-    );
-  }
   return (
     <div
       style={{
-        backgroundColor: "#ffffffff",
+        backgroundColor: "#ffffff",
         minHeight: "100vh",
         display: "flex",
         width: "100%",
@@ -224,10 +139,30 @@ const DashboardCitizen = () => {
         <div className="content-container">
           <Header user={user} onMenuClick={() => setIsSidebarOpen(true)} />
           <Dashboard
-            weather={mockData.weather}
-            alert={mockData.alert}
-            forecast={mockData.forecast}
-            shelters={mockData.shelters}
+            weather={weather}
+            alert={activeAlert}
+            forecast={forecast}
+            shelters={shelters}
+            floodRisk={floodRisk}
+            statuses={{
+              weather: weatherStatus,
+              flood: floodStatus,
+              forecast: forecastStatus,
+              shelters: sheltersStatus,
+              profile: profileStatus,
+            }}
+            relativeTimes={{
+              weather: weatherTime,
+              flood: floodTime,
+              forecast: forecastTime,
+              shelters: sheltersTime,
+            }}
+            ageMinutes={{
+              weather: weatherAge,
+              flood: floodAge,
+              forecast: forecastAge,
+              shelters: sheltersAge,
+            }}
           />
         </div>
       </main>
@@ -239,7 +174,6 @@ const DashboardCitizen = () => {
           margin: 0 auto;
         }
 
-        /* ONLY add left margin if screen is wider than 840px */
         @media (min-width: 840px) {
           .main-content-area {
             margin-left: 290px;

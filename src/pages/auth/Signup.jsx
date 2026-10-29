@@ -176,6 +176,8 @@ const Signup = () => {
       );
       const user = userCredential.user;
       await sendEmailVerification(user);
+      try { await updateProfile(user, { displayName: formData.fullName }); } catch (_) {}
+      localStorage.setItem("aegis_user_profile", JSON.stringify({ uid: user.uid, fullName: formData.fullName, email: formData.email, entity: formData.entity }));
       await setDoc(doc(db, "users", user.uid), {
         fullName: formData.fullName,
         email: formData.email,

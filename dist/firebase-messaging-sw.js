@@ -1,14 +1,6 @@
-// public/firebase-messaging-sw.js
+importScripts("https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js");
+importScripts("https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js");
 
-// Import Firebase libraries for background workers
-importScripts(
-  "https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js",
-);
-importScripts(
-  "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js",
-);
-
-// Initialize Firebase (Replace these with your actual Firebase config values!)
 firebase.initializeApp({
   apiKey: "AIzaSyD-uwp07GURrHOqzVpKgPsNXkmejzH5bto",
   authDomain: "aegis-app-950c8.firebaseapp.com",
@@ -20,31 +12,20 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// Handle background messages
 messaging.onBackgroundMessage((payload) => {
-  console.log(
-    "[firebase-messaging-sw.js] Received background message ",
-    payload,
-  );
-
+  const severity = payload.data?.severity || "SAFE";
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
-    icon: "/logo192.png", // Ensure you have your Aegis logo here
-    badge: "/logo192.png", // Small icon for mobile status bar
-    vibrate: [200, 100, 200, 100, 200], // Professional alert vibration
-    requireInteraction: payload.notification.title.includes("🚨")
-      ? true
-      : false, // Forces user to dismiss if it's Danger
+    icon: "/logo192.png",
+    badge: "/logo192.png",
+    vibrate: severity === "DANGER" ? [200, 100, 200, 100, 200] : [100],
+    requireInteraction: severity === "DANGER",
   };
-
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
-// Handle clicking the notification when app is closed
 self.addEventListener("notificationclick", function (event) {
   event.notification.close();
-  event.waitUntil(
-    clients.openWindow("/"), // Opens your Aegis Dashboard when clicked
-  );
+  event.waitUntil(clients.openWindow("/"));
 });

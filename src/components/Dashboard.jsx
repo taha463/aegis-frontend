@@ -41,7 +41,20 @@ import Lottie from "lottie-react";
 
 import successAnimation from "../assets/Emailsent!.json";
 
-const DashboardCitizen = ({ weather, forecast, alert, shelters }) => {
+
+// In-memory 3-hour snapshot cache
+let memorySnapshotCache = null;
+
+const DashboardCitizen = ({
+  weather,
+  forecast,
+  alert,
+  shelters,
+  floodRisk,
+  statuses,
+  relativeTimes = {},
+  ageMinutes = {},
+}) => {
   const navigate = useNavigate();
 
   const locationUrl = useLocation();
@@ -825,6 +838,7 @@ const DashboardCitizen = ({ weather, forecast, alert, shelters }) => {
 
   const handleRefresh = () => {
     console.log("🔄 Global refresh triggered");
+    memorySnapshotCache = null; // Invalidate memory cache on manual refresh
 
     // 1. Immediately show the global loader
     setIsFetchingData(true);
@@ -879,22 +893,34 @@ const DashboardCitizen = ({ weather, forecast, alert, shelters }) => {
     let isMounted = true;
     const THREE_HOURS = 3 * 60 * 60 * 1000;
 
-    // 1. Check the vault first
-    const savedEntry = localStorage.getItem("aegis_last_snapshot");
+    // 1. Check in-memory 3-hour cache first (0ms instantaneous render)
     let hasValidCache = false;
 
-    if (savedEntry) {
-      const { data, timestamp } = JSON.parse(savedEntry);
-      const age = Date.now() - timestamp;
-
-      // If data is less than 3 hours old, SHOW IT IMMEDIATELY.
+    if (memorySnapshotCache && memorySnapshotCache.data) {
+      const age = Date.now() - memorySnapshotCache.timestamp;
       if (age < THREE_HOURS) {
-        setApiData(data);
+        const cachedData = memorySnapshotCache.data;
+        setApiData(cachedData);
+
+        // Immediately restore human alert text from cached data (no manual refresh needed)
+        if (cachedData.human_alert) {
+          const cleanAlert = cachedData.human_alert.replace(/Line\s*\d+\s*:\s*/gi, "");
+          const lines = cleanAlert.split("\n").map((l) => l.trim()).filter(Boolean);
+          if (lines.length > 0) {
+            setParsedAlertDetail(lines.slice(0, 2).join(" "));
+            setParsedAlertExpected(lines.length >= 3 ? lines.slice(2).join(" ") : "");
+          } else {
+            setParsedAlertDetail(cleanAlert);
+            setParsedAlertExpected("");
+          }
+        } else if (cachedData.ai_reasoning) {
+          setParsedAlertDetail(cachedData.ai_reasoning);
+          setParsedAlertExpected("");
+        }
+
         setIsFetchingData(false); // Kill full-screen loader instantly
         hasValidCache = true;
-        console.log(
-          "⚡ Dashboard loaded instantly from cache (Under 3 hours old).",
-        );
+        setLastRefreshTimestamp(memorySnapshotCache.timestamp);
       }
     }
 
@@ -904,6 +930,14 @@ const DashboardCitizen = ({ weather, forecast, alert, shelters }) => {
       userLocation.length !== 2 ||
       geoCityName === "Locating..."
     ) {
+      return;
+    }
+
+    // ⚡ If we ALREADY have fresh valid cache in memory (< 3 hours old) and not a manual refresh,
+    // DO NOT re-fetch from network! This ensures navigating away and returning to Dashboard
+    // uses memory cache instantly with 0 redundant live network requests.
+    if (hasValidCache && refreshCount === 0) {
+      console.log("⚡ Navigated back to Dashboard: Using active 3-hour memory cache. Zero network calls needed.");
       return;
     }
 
@@ -918,7 +952,7 @@ const DashboardCitizen = ({ weather, forecast, alert, shelters }) => {
 
     // Set a timeout specifically for the fetch. If 'E' network takes longer than 10 seconds, give up.
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
 
     fetch(`${API_URL}/update-from-chip`, {
       method: "POST",
@@ -935,12 +969,9 @@ const DashboardCitizen = ({ weather, forecast, alert, shelters }) => {
         clearTimeout(timeoutId);
         if (!isMounted) return;
 
-        // Save fresh data to the vault
+        // Save fresh data to in-memory 3-hour cache
+        memorySnapshotCache = { data, timestamp: Date.now() };
         setApiData(data);
-        localStorage.setItem(
-          "aegis_last_snapshot",
-          JSON.stringify({ data, timestamp: Date.now() }),
-        );
 
         // Parse human alerts...
         if (data.human_alert) {
@@ -1006,6 +1037,26 @@ const DashboardCitizen = ({ weather, forecast, alert, shelters }) => {
       controller.abort(); // Clean up if user leaves page
     };
   }, [userLocation, geoCityName, refreshCount]);
+
+  // Synchronize human alert text whenever apiData updates
+  useEffect(() => {
+    if (!apiData) return;
+
+    if (apiData.human_alert) {
+      const cleanAlert = apiData.human_alert.replace(/Line\s*\d+\s*:\s*/gi, "");
+      const lines = cleanAlert.split("\n").map((l) => l.trim()).filter(Boolean);
+      if (lines.length > 0) {
+        setParsedAlertDetail(lines.slice(0, 2).join(" "));
+        setParsedAlertExpected(lines.length >= 3 ? lines.slice(2).join(" ") : "");
+      } else {
+        setParsedAlertDetail(cleanAlert);
+        setParsedAlertExpected("");
+      }
+    } else if (apiData.ai_reasoning) {
+      setParsedAlertDetail(apiData.ai_reasoning);
+      setParsedAlertExpected("");
+    }
+  }, [apiData]);
 
   useEffect(() => {
     const setupNotifications = async () => {
@@ -1139,7 +1190,7 @@ const DashboardCitizen = ({ weather, forecast, alert, shelters }) => {
 
   // --- THE GATEKEEPER ---
   // If we are still loading and have no memory, show the spinner.
-  if (isFetchingData && !apiData) {
+  if (isFetchingData && !apiData && !weather) {
     return (
       <div className="loader-container">
         <style>{styles}</style>
@@ -1478,15 +1529,7 @@ const DashboardCitizen = ({ weather, forecast, alert, shelters }) => {
 
   // ✅ FIXED: Evacuation Steps - Now properly checks evacuation_plan.status
 
-  console.log("🚨 EVAC DEBUG:", {
-    evacStatus: apiData?.evacuation_plan?.status,
-
-    evacMessage: apiData?.evacuation_plan?.message,
-
-    isSafeFromRiver: apiData?.scientific_intel?.is_safe_from_river,
-
-    alertStatus: apiData?.status,
-  });
+// Evacuation debug silenced
 
   // ✅ FIXED: Comprehensive Evacuation Guidance logic
   const evacSteps = apiData?.evacuation_plan
@@ -1620,7 +1663,7 @@ const DashboardCitizen = ({ weather, forecast, alert, shelters }) => {
 
             <p>
               Hello,{" "}
-              <span>{profile?.fullName || profile?.name || "Citizen"}</span>{" "}
+              <span>{profile?.fullName || auth.currentUser?.displayName || profile?.name || "Citizen"}</span>{" "}
               Here's today's flood status in your area.
             </p>
           </div>
@@ -1700,23 +1743,25 @@ const DashboardCitizen = ({ weather, forecast, alert, shelters }) => {
                         whiteSpace: "pre-line",
                       }}
                     >
-                      {parsedAlertDetail}
+                      {parsedAlertDetail || (apiData?.human_alert ? apiData.human_alert.replace(/Line\s*\d+\s*:\s*/gi, "") : (alert?.details || "Beautiful sunny weather with no flood concerns. Plain area - standard flood monitoring applies."))}
                     </p>
                   </div>
 
-                  <p
-                    style={{
-                      fontSize: "0.9rem",
+                  {(parsedAlertExpected || alert?.action) && (
+                    <p
+                      style={{
+                        fontSize: "0.9rem",
 
-                      fontWeight: 600,
+                        fontWeight: 600,
 
-                      margin: "0.75rem 0 0 0",
+                        margin: "0.75rem 0 0 0",
 
-                      color: alertTextColor,
-                    }}
-                  >
-                    {parsedAlertExpected}
-                  </p>
+                        color: alertTextColor,
+                      }}
+                    >
+                      {parsedAlertExpected || alert?.action}
+                    </p>
+                  )}
 
                   {/* ✅ ARRIVAL TIME BANNER */}
 
