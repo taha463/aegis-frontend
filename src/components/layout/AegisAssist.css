@@ -461,3 +461,66 @@
     max-width: 90%;
   }
 }
+
+
+/* Claude-Style Clean Markdown Typography */
+.aegis-assist-scope .aegis-markdown-body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.925rem;
+  line-height: 1.68;
+  color: #1f2937;
+  word-break: break-word;
+}
+
+.aegis-assist-scope .aegis-markdown-body p {
+  margin: 0 0 0.75rem 0;
+}
+
+.aegis-assist-scope .aegis-markdown-body p:last-child {
+  margin-bottom: 0;
+}
+
+.aegis-assist-scope .aegis-markdown-body strong {
+  font-weight: 700;
+  color: #044e3b;
+}
+
+.aegis-assist-scope .aegis-markdown-body ul,
+.aegis-assist-scope .aegis-markdown-body ol {
+  margin: 0.5rem 0 0.75rem 1.25rem;
+  padding: 0;
+}
+
+.aegis-assist-scope .aegis-markdown-body li {
+  margin-bottom: 0.35rem;
+  line-height: 1.6;
+}
+
+.aegis-assist-scope .aegis-markdown-body h1,
+.aegis-assist-scope .aegis-markdown-body h2,
+.aegis-assist-scope .aegis-markdown-body h3,
+.aegis-assist-scope .aegis-markdown-body h4 {
+  font-family: "Open Sans", sans-serif;
+  font-weight: 700;
+  color: #111827;
+  margin: 0.85rem 0 0.45rem 0;
+  line-height: 1.35;
+}
+
+.aegis-assist-scope .aegis-markdown-body h3 {
+  font-size: 1.05rem;
+}
+
+.aegis-assist-scope .aegis-markdown-body h4 {
+  font-size: 0.95rem;
+}
+
+.aegis-assist-scope .aegis-markdown-body hr {
+  border: 0;
+  border-top: 1px solid #e5e7eb;
+  margin: 1rem 0;
+}
+
+.aegis-assist-scope .bubble--user {
+  white-space: pre-wrap;
+}

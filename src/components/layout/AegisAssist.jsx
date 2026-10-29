@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { X, Send, Mic, Loader2 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import "./AegisAssist.css";
 import { auth } from "../../firebaseconfig";
 import API_URL from "../../config";
@@ -330,7 +331,9 @@ const AegisAssist = ({ onClose }) => {
                             Aegis is thinking...
                           </span>
                         ) : (
-                          msg.text
+                          <div className="aegis-markdown-body">
+                            <ReactMarkdown>{msg.text}</ReactMarkdown>
+                          </div>
                         )}
                       </div>
                     </div>
