@@ -34,7 +34,7 @@
     "preview": "vite preview",
     "prebuild": "node generate-sw.js",
     "predev": "node generate-sw.js",
-    "test": "node --test tests/**/*.test.js"
+    "test": "node --test tests/*.test.js"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",
