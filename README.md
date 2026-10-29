@@ -235,9 +235,9 @@ Aegis Assist converts structured real-time telemetry (river discharge, 4-day for
 ## 👥 Project Team & Acknowledgments
 
 **Developed by Final Year Project Team — HITEC University Taxila:**
-- **Muhammad Taha** — *Frontend Architecture, Client Resilience & CI/CD* ([LinkedIn](https://linkedin.com/in/muhammadtaha02) · [GitHub](https://github.com/taha463))
-- **Hamza Munir** — *Machine Learning & Hydrological Forecasting*
-- **Shahzad Babar** — *Backend Architecture & Spatial Data Systems*
+- **Muhammad Taha** — *DesignSystem, Machine Learning & Hydrological Forecasting, Client Resilience & CI/CD* ([LinkedIn](https://linkedin.com/in/muhammadtaha02) · [GitHub](https://github.com/taha463))
+- **Hamza Munir** — *Backend Architecture & Spatial Data Systems*
+- **Shahzad Babar** — *Frontend Architecture*
 
 ---
 
