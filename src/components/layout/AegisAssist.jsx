@@ -125,16 +125,38 @@ const AegisAssist = ({ onClose }) => {
       }
 
       const user = auth.currentUser;
-      const token = user ? await user.getIdToken() : "";
+      const token = user ? await user.getIdToken().catch(() => "") : "";
+
+      // Extract latest cached dashboard snapshot to inject live RAG intelligence
+      let dashboardContext = null;
+      try {
+        const savedSnap = localStorage.getItem("aegis_last_snapshot");
+        if (savedSnap) {
+          const parsed = JSON.parse(savedSnap);
+          dashboardContext = parsed.data || parsed;
+        }
+      } catch (e) {
+        console.warn("Could not retrieve dashboard context for RAG:", e);
+      }
 
       const response = await fetch(`${API_URL}/ai/chat/stream`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: token ? `Bearer ${token}` : "",
         },
-        body: JSON.stringify({ message: userText, lat, lon, city }),
+        body: JSON.stringify({
+          message: userText,
+          lat,
+          lon,
+          city,
+          dashboard_context: dashboardContext,
+        }),
       });
+
+      if (!response.ok) {
+        throw new Error(`Server returned HTTP ${response.status}`);
+      }
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
@@ -165,9 +187,24 @@ const AegisAssist = ({ onClose }) => {
           return updated;
         });
       }
+
+      if (!fullResponse.trim()) {
+        fullResponse =
+          "I am here to assist with flood safety, nearest shelters, and evacuation guidance. Please ask any question about current conditions.";
+        setMessages((prev) => {
+          const updated = [...prev];
+          updated[updated.length - 1] = {
+            role: "ai",
+            text: fullResponse,
+            thinking: false,
+          };
+          return updated;
+        });
+      }
     } catch (err) {
+      console.error("Aegis Assist streaming error:", err);
       fullResponse =
-        "Connection error. Please check your network and try again.";
+        "Connection error. Please check your network or verify that the Aegis backend is running.";
       setMessages((prev) => {
         const updated = [...prev];
         updated[updated.length - 1] = {
