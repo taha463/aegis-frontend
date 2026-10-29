@@ -301,12 +301,18 @@ const DashboardCitizen = ({
 
   const [userLocation, setUserLocation] = useState(null);
 
-  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [loadingProfile, setLoadingProfile] = useState(() => {
+    try {
+      const saved = localStorage.getItem("aegis_user_profile");
+      return !saved && !auth?.currentUser;
+    } catch (e) {
+      return false;
+    }
+  });
   useEffect(() => {
     const profileTimer = setTimeout(() => {
-      console.log("⏱️ Profile check hung. Bypassing Firebase blocker.");
       setLoadingProfile(false);
-    }, 6000);
+    }, 1500);
     return () => clearTimeout(profileTimer);
   }, []);
 
@@ -1134,11 +1140,13 @@ const DashboardCitizen = ({
 
   // ✅ Auth — MUST also be before the early return
 
-  // ✅ Auth — SECURE OFFLINE FIX
+  // ✅ Auth — SECURE OFFLINE FIX with Instant Session Memory
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setLoadingProfile(false);
       if (user) {
-        if (navigator.onLine) {
+        const saved = localStorage.getItem("aegis_user_profile");
+        if (!saved && navigator.onLine) {
           try {
             const token = await user.getIdToken();
             const response = await fetch(`${API_URL}/user/profile`, {
@@ -1152,9 +1160,6 @@ const DashboardCitizen = ({
           }
         }
       } else {
-        // 🚨 THE LOGIN TRAP FIX 🚨
-        // Do NOT use navigator.onLine here. Ghost networks will trick it and kick you out!
-        // Instead, check the vault. If they have a profile, let them stay on the dashboard.
         const vaultProfile = localStorage.getItem("aegis_user_profile");
         if (!vaultProfile) {
           console.log("No user and no cache. Redirecting to login.");
@@ -1165,7 +1170,6 @@ const DashboardCitizen = ({
           );
         }
       }
-      setLoadingProfile(false);
     });
 
     return () => unsubscribe();

@@ -86,6 +86,11 @@ export async function resolveUserProfile(firebaseUser, options = {}) {
         staleGraceMs: DOMAIN_CACHE_POLICIES.profile.staleGraceMs,
         source: 'backend-profile',
       });
+      if (typeof window !== 'undefined' && window.localStorage) {
+        try {
+          window.localStorage.setItem('aegis_user_profile', JSON.stringify(merged));
+        } catch (e) {}
+      }
 
       return {
         status: STATUS.FRESH,
